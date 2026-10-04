@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#001E43">
+<title>Hirafu Free Shuttle</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ===== Tokens =====
+   トンマナ維持: 紺 #001E43（タグ／hirafufreebus.com）、路線色（公式サイト実測）、Bebas Neue＋Noto Sans JP、正式ロゴ（ネガ）
+   v0.3の品位: 余白・細線・静かな配色。黄はタグの緊急表記にだけ使う（装飾に使わない） */
+:root{
+  --navy:#001E43; --navy-2:#0A2A55; --navy-3:#163A6B;
+  --ink:#0F1B2D; --ink-2:#47546A; --ink-3:#8A94A6;
+  --line:#E7EBF1; --paper:#FFFFFF; --mist:#F5F7FA;
+  --frost:rgba(255,255,255,.72);
+  --sos:#F2C200;
+  --l-lower:#E8383D; --l-middle:#57AE4C; --l-kabayama:#26499D; --l-east:#EC9F21; --l-downtown:#A64B98;
+  --ease:cubic-bezier(.2,.7,.2,1);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{font-family:"Noto Sans JP","Hiragino Kaku Gothic ProN",sans-serif;font-weight:400;color:var(--ink);background:#E9EDF3;display:flex;gap:32px;justify-content:center;align-items:flex-start;padding:28px 16px;-webkit-font-smoothing:antialiased;letter-spacing:.01em}
+.bb{font-family:"Bebas Neue","Noto Sans JP",sans-serif;font-weight:400;letter-spacing:.06em}
+.phone{width:390px;max-width:100%;height:844px;background:var(--paper);border-radius:44px;overflow:hidden;position:relative;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,30,67,.22),0 0 0 10px #0d1726}
+@media (max-width:860px){body{padding:0;background:var(--paper)}.phone{border-radius:0;height:100dvh;box-shadow:none;width:100%}.notes{display:none}}
+.screen{position:absolute;inset:0;display:flex;flex-direction:column;opacity:0;pointer-events:none;transform:translateY(8px);transition:opacity .45s var(--ease),transform .45s var(--ease)}
+.screen.on{opacity:1;pointer-events:auto;transform:none}
+.scroll{flex:1;overflow-y:auto;scrollbar-width:none}.scroll::-webkit-scrollbar{display:none}
+.ic{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.eyebrow{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-3);font-weight:500}
+.hair{height:1px;background:var(--line)}
+/* ===== 0 Welcome ===== */
+.welcome{background:radial-gradient(120% 80% at 80% 0%,#123764 0%,var(--navy) 55%,#00142e 100%);color:#fff}
+#snow{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:.55}
+.w-top{position:relative;display:flex;justify-content:space-between;align-items:flex-start;padding:58px 28px 0}
+.ktlogo{width:132px;height:auto;display:block}
+.langsel{appearance:none;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);color:#fff;font:500 12px "Noto Sans JP";padding:7px 28px 7px 12px;border-radius:999px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='white' fill='none' stroke-width='1.3'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 11px center}
+.langsel option{color:#000}
+.w-body{position:relative;padding:60px 28px 0}
+html[lang=ja] .w-body{padding-top:36px}html[lang=ja] .w-body p.lead{font-size:14px;line-height:1.7}html[lang=ja] .key{margin-top:26px}
+html[lang=ja] .w-body h1{font-size:40px;line-height:1.25;font-weight:500;letter-spacing:.02em}
+.welcome{overflow-y:auto;scrollbar-width:none}.welcome>*{flex-shrink:0}
+.w-body .eyebrow{color:rgba(255,255,255,.6)}
+.w-body h1{font-size:54px;line-height:.92;margin-top:14px}
+.w-body p.lead{margin-top:16px;font-size:15px;line-height:1.75;color:rgba(255,255,255,.82);font-weight:300;max-width:300px}
+/* Niseko Key card — 虹の強み: タグ＝本物と確認された鍵／個人情報を持たない */
+.key{position:relative;margin:36px 28px 0;border-radius:20px;padding:20px 20px 18px;background:linear-gradient(135deg,rgba(255,255,255,.14),rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.18);backdrop-filter:blur(10px);overflow:hidden}
+.key:after{content:"";position:absolute;top:-60%;left:-30%;width:60%;height:220%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent);transform:rotate(20deg);animation:sheen 4.5s var(--ease) 1.2s infinite}
+@keyframes sheen{0%{left:-40%}35%,100%{left:130%}}
+.key .row{display:flex;justify-content:space-between;align-items:center}
+.key .k1{font-size:22px}
+.key .num{font-size:13px;letter-spacing:.24em;color:rgba(255,255,255,.75);margin-top:18px}
+.verified{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:500;color:#BFE6C8;background:rgba(87,174,76,.18);border:1px solid rgba(87,174,76,.45);padding:4px 10px;border-radius:999px}
+.verified .ic{width:13px;height:13px;stroke-width:2}
+.key .by{font-size:10.5px;letter-spacing:.14em;color:rgba(255,255,255,.55);margin-top:6px}
+.w-cta{position:relative;margin-top:auto;padding:24px 28px 18px}
+.btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;border:0;border-radius:16px;padding:17px 18px;font:500 16px "Noto Sans JP";cursor:pointer;transition:transform .2s var(--ease),background .2s}
+.btn:active{transform:scale(.985)}
+.btn.light{background:#fff;color:var(--navy)}
+.btn.quiet{background:transparent;color:rgba(255,255,255,.82);font-size:14px;padding:12px}
+.btn.navy{background:var(--navy);color:#fff}
+.btn.outline{background:#fff;color:var(--navy);border:1px solid var(--line)}
+.privacy{display:flex;gap:10px;align-items:flex-start;font-size:12px;line-height:1.65;color:rgba(255,255,255,.6);padding:4px 4px 0}
+.privacy .ic{width:16px;height:16px;margin-top:2px;opacity:.8}
+/* emergency — タグの「call 110」を継承。上品に、しかし常に一手で届く */
+.sosbar{display:flex;align-items:center;justify-content:space-between;padding:12px 22px calc(12px + env(safe-area-inset-bottom));font-size:12.5px;color:rgba(255,255,255,.75);background:rgba(0,0,0,.18);border-top:1px solid rgba(255,255,255,.08);position:relative}
+.sosbar a{display:inline-flex;align-items:center;gap:6px;color:var(--sos);text-decoration:none;font-weight:700;letter-spacing:.06em}
+.sosbar a .ic{width:15px;height:15px;stroke-width:2}
+/* ===== inner app ===== */
+.top{padding:56px 22px 14px;display:flex;justify-content:space-between;align-items:flex-end;background:var(--paper)}
+.top h2{font-size:30px;line-height:1;color:var(--navy)}
+.iconbtn{width:38px;height:38px;border-radius:12px;border:1px solid var(--line);display:grid;place-items:center;background:#fff;color:var(--navy);cursor:pointer}
+.pad{padding:0 22px}
+/* next departure hero */
+.nexthero{margin:6px 22px 0;border-radius:22px;background:var(--navy);color:#fff;padding:20px;position:relative;overflow:hidden}
+.nexthero .eyebrow{color:rgba(255,255,255,.55)}
+.nexthero .stop{font-size:15px;margin-top:6px;font-weight:500}
+.nexthero .walk{font-size:12px;color:rgba(255,255,255,.6);margin-top:2px}
+.dep{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-top:1px solid rgba(255,255,255,.1)}
+.dep:first-of-type{margin-top:14px}
+.dep .ln{display:flex;align-items:center;gap:10px;font-size:15px}
+.dep .sw{width:6px;height:26px;border-radius:3px}
+.dep .min{font-size:30px;line-height:1}
+.dep .min small{font-size:13px;margin-left:3px;letter-spacing:.04em;color:rgba(255,255,255,.65)}
+.live{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:rgba(255,255,255,.65)}
+.live i{width:6px;height:6px;border-radius:50%;background:#6FD683;box-shadow:0 0 0 0 rgba(111,214,131,.6);animation:ping 2s infinite}
+@keyframes ping{70%{box-shadow:0 0 0 7px rgba(111,214,131,0)}100%{box-shadow:0 0 0 0 rgba(111,214,131,0)}}
+.section{padding:28px 22px 10px;display:flex;justify-content:space-between;align-items:baseline}
+.lines a{display:flex;align-items:center;gap:14px;padding:16px 22px;text-decoration:none;color:inherit;border-top:1px solid var(--line);cursor:pointer;transition:background .2s}
+.lines a:last-child{border-bottom:1px solid var(--line)}
+.lines a:active{background:var(--mist)}
+.lines .bar{width:4px;height:34px;border-radius:2px}
+.lines .nm{font-size:21px;line-height:1;color:var(--ink)}
+.lines .jp{font-size:12px;color:var(--ink-3);margin-top:4px}
+.lines .meta{margin-left:auto;text-align:right;font-size:12px;color:var(--ink-3)}
+.lines .meta b{display:block;font-size:15px;color:var(--ink);font-weight:500}
+.lines .chev{color:var(--ink-3)}
+.foot{padding:26px 22px 18px;font-size:11px;color:var(--ink-3);display:flex;align-items:center;gap:8px;line-height:1.6}
+.foot .ic{width:14px;height:14px}
+/* line detail */
+.lhead{padding:56px 22px 0;background:var(--paper)}
+.back{display:inline-flex;align-items:center;gap:4px;font-size:13px;color:var(--ink-2);cursor:pointer;margin-bottom:14px}
+.lhead h2{font-size:34px;line-height:1}
+.lhead .jp{font-size:13px;color:var(--ink-3);margin-top:4px}
+.lhead .rule{height:3px;border-radius:2px;margin-top:16px;width:44px}
+.eta{margin:18px 22px 0;border:1px solid var(--line);border-radius:18px;padding:16px 18px;display:flex;align-items:center;justify-content:space-between}
+.eta .t{font-size:12px;color:var(--ink-3)}
+.eta .v{font-size:15px;font-weight:500;margin-top:3px}
+.eta .big{font-size:40px;line-height:1;color:var(--navy)}
+.eta .big small{font-size:14px;margin-left:3px;color:var(--ink-3)}
+.toggle{display:flex;align-items:center;justify-content:space-between;margin:12px 22px 0;padding:14px 18px;border-radius:18px;background:var(--mist);font-size:13.5px;line-height:1.5}
+.sw-t{width:46px;height:28px;border-radius:999px;background:#C9D1DC;position:relative;cursor:pointer;flex-shrink:0;transition:background .25s}
+.sw-t:after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:transform .25s var(--ease)}
+.sw-t.on{background:var(--navy)}.sw-t.on:after{transform:translateX(18px)}
+/* official-style list (hirafufreebus.com と同じ番号四角＋EN / JA) */
+.stops{list-style:none;margin:18px 0 0;border-top:1px solid var(--line)}
+.stops li{display:grid;grid-template-columns:30px 1fr auto;gap:14px;align-items:center;padding:13px 22px;border-bottom:1px solid var(--line);cursor:pointer;transition:background .2s}
+.stops li:active{background:var(--mist)}
+.stops .no{width:28px;height:28px;display:grid;place-items:center;background:var(--lc);color:#fff;font:400 20px/1 "Bebas Neue";padding-top:2px}
+.stops .nm{font-size:15px;line-height:1.35}
+.stops .nm small{display:block;font-size:11.5px;color:var(--ink-3);letter-spacing:.02em}
+.stops .st{font-size:12px;color:var(--ink-3);white-space:nowrap}
+.stops li.bus .st{color:var(--ink);font-weight:500;display:flex;align-items:center;gap:6px}
+.stops li.bus .st i{width:8px;height:8px;border-radius:50%;background:var(--lc);box-shadow:0 0 0 4px color-mix(in srgb,var(--lc) 25%,transparent)}
+.stops li.mine{background:#FBFCFE}
+.stops li.mine .st{color:var(--navy);font-weight:700;letter-spacing:.08em;font-size:11px;border:1px solid var(--navy);padding:3px 8px;border-radius:999px}
+.hours{margin:16px 22px 0;font-size:12px;color:var(--ink-3);line-height:1.75}
+.near{margin:20px 22px 22px;border-radius:18px;overflow:hidden;border:1px solid var(--line)}
+.near .img{height:110px;background:linear-gradient(160deg,#cfd9e6,#eef2f7);position:relative}
+.near .img svg{position:absolute;inset:0;width:100%;height:100%}
+.near .tx{padding:14px 16px}
+.near .tx b{font-size:15px;font-weight:500}
+.near .tx p{font-size:12.5px;color:var(--ink-2);margin-top:4px;line-height:1.6}
+/* explore */
+.cats{display:flex;gap:8px;overflow-x:auto;padding:4px 22px 12px;scrollbar-width:none}
+.cats button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 14px;font:500 13px "Noto Sans JP";color:var(--ink-2);white-space:nowrap;cursor:pointer}
+.cats button.on{background:var(--navy);border-color:var(--navy);color:#fff}
+.mapframe{flex:1;position:relative;margin:0 0 0;border-top:1px solid var(--line);background:var(--mist)}
+.mapframe iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.mapnote{font-size:11.5px;color:var(--ink-3);padding:8px 22px;display:flex;justify-content:space-between;gap:8px}
+.mapnote a{color:var(--navy);font-weight:500;text-decoration:none;white-space:nowrap}
+/* help */
+.helpitem{display:flex;align-items:center;gap:14px;padding:18px 22px;border-top:1px solid var(--line);text-decoration:none;color:inherit}
+.helpitem:last-child{border-bottom:1px solid var(--line)}
+.helpitem .ic{width:22px;height:22px;color:var(--navy)}
+.helpitem b{font-size:15px;font-weight:500;display:block}
+.helpitem span{font-size:12px;color:var(--ink-3)}
+.helpitem.sos .ic{color:#B58900}
+.trust{margin:22px;border-radius:18px;background:var(--mist);padding:18px}
+.trust b{font-size:14px;font-weight:500;display:flex;align-items:center;gap:8px}
+.trust p{font-size:12.5px;color:var(--ink-2);line-height:1.7;margin-top:8px}
+/* tab bar */
+.tabbar{display:flex;border-top:1px solid var(--line);background:rgba(255,255,255,.92);backdrop-filter:blur(12px);padding:6px 0 calc(8px + env(safe-area-inset-bottom))}
+.tabbar button{flex:1;border:0;background:transparent;padding:6px 0;font:500 10.5px "Noto Sans JP";color:var(--ink-3);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;letter-spacing:.04em}
+.tabbar button.on{color:var(--navy)}
+.tabbar .ic{width:22px;height:22px}
+/* onboarding (optional personalize) */
+.ob{background:var(--paper)}
+.ob .q{padding:0 22px}
+.ob h3{font-size:26px;line-height:1.15;font-weight:500;color:var(--navy);margin-top:10px}
+.ob .sub{font-size:13px;color:var(--ink-3);margin-top:8px;line-height:1.6}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:24px}
+.choices button{border:1px solid var(--line);background:#fff;border-radius:14px;padding:16px 12px;font:400 14.5px "Noto Sans JP";color:var(--ink);cursor:pointer;text-align:left;transition:border-color .2s,background .2s}
+.choices button.on{border-color:var(--navy);background:#F4F7FB;box-shadow:inset 0 0 0 1px var(--navy)}
+.dots{display:flex;gap:6px;padding:0 22px}
+.dots i{height:3px;flex:1;border-radius:2px;background:var(--line);transition:background .3s}
+.dots i.on{background:var(--navy)}
+.ob .nav{margin-top:auto;padding:18px 22px 26px;display:flex;gap:10px}
+/* toast (drop-off alert preview) */
+.toast{position:absolute;left:12px;right:12px;top:14px;background:rgba(15,27,45,.92);backdrop-filter:blur(14px);color:#fff;border-radius:20px;padding:14px 16px;display:flex;gap:12px;align-items:center;transform:translateY(-130%);transition:transform .5s var(--ease);z-index:5;box-shadow:0 12px 30px rgba(0,0,0,.25)}
+.toast{opacity:0}.toast.show{transform:none;opacity:1}
+.toast .ic{width:22px;height:22px;color:var(--sos)}
+.toast b{font-size:14px;font-weight:500;display:block}
+.toast span{font-size:12px;opacity:.75}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+/* shot mode（?shot=1）: 画像書き出し用 */
+body.shot{padding:0;background:var(--paper);display:block}
+body.shot .phone{border-radius:0;box-shadow:none;width:390px;height:844px}
+body.shot .notes{display:none}
+body.shot .screen{transition:none}
+.mapph{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;color:var(--ink-2);background:repeating-linear-gradient(45deg,#F5F7FA 0 14px,#EEF2F7 14px 28px)}
+.mapph .ic{width:34px;height:34px;color:var(--navy)}
+.mapph b{font-size:16px;font-weight:500;color:var(--navy)}
+.mapph span{font-size:12.5px;line-height:1.7}
+/* notes */
+.notes{width:380px;font-size:13px;line-height:1.75;color:#24324a}
+.notes .box{background:#fff;border-radius:14px;padding:18px 18px 8px;box-shadow:0 6px 24px rgba(0,30,67,.08)}
+.notes h2{font-size:16px;color:var(--navy);margin-bottom:4px}
+.notes h3{font-size:13px;color:var(--navy);margin:16px 0 4px}
+.notes ul{padding-left:18px}
+.notes nav{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 4px}
+.notes nav button{border:1px solid #c9d2df;background:#fff;border-radius:8px;padding:6px 10px;font:500 12px "Noto Sans JP";cursor:pointer}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-bus" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="15" rx="3"/><path d="M4 11h16M8 21v-3M16 21v-3"/><circle cx="8" cy="14.5" r=".6"/><circle cx="16" cy="14.5" r=".6"/></symbol>
+  <symbol id="i-map" viewBox="0 0 24 24"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"/><path d="M9 4v14M15 6v14"/></symbol>
+  <symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3 5 6v6c0 4.5 3 7.5 7 9 4-1.5 7-4.5 7-9V6l-7-3z"/><path d="m9 12 2 2 4-4"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4 10-10"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24"><path d="m15 6-6 6 6 6"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20a2 2 0 0 0 4 0"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-6-5.5-6-11a6 6 0 0 1 12 0c0 5.5-6 11-6 11z"/><circle cx="12" cy="10" r="2"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol>
+  <symbol id="i-ext" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></symbol>
+</svg>
+
+<div class="phone">
+  <div class="toast" id="toast"><svg class="ic"><use href="#i-bell"/></svg><div><b data-i18n="toast_b">Next stop is yours</b><span data-i18n="toast_s">Aspenwood · please get ready</span></div></div>
+
+  <!-- 0 WELCOME -->
+  <section class="screen welcome on" data-s="welcome">
+    <canvas id="snow"></canvas>
+    <div class="w-top">
+      <!-- 倶知安観光協会ロゴ（ロゴマニュアル2023.10.20のネガティブ表示。形状・比率は無加工、周辺に図形を置かない、最小20mm＝132px） -->
+      <svg class="ktlogo" xmlns="http://www.w3.org/2000/svg" viewBox="164 178 262 163" role="img" aria-label="NISEKO KUTCHAN"><path fill="#fff" d="M 284.464844 180.980469 L 166.132812 281.507812 L 251.074219 248.886719 L 311.78125 276.355469 L 329.535156 276.355469 L 307.355469 265.265625 L 293.984375 231.75 L 423.855469 281.507812 L 334.269531 205.398438 L 341.449219 224.4375 L 275.867188 219.339844 L 289.113281 185.3125 L 321.175781 194.277344 L 305.523438 180.980469 Z M 284.464844 180.980469 "/><path  fill="#fff" fill-opacity="1" d="M 204.933594 313.433594 L 198.746094 313.433594 L 184.558594 324.527344 L 184.558594 313.433594 L 180.113281 313.433594 L 180.113281 337.363281 L 184.558594 337.363281 L 184.558594 329.378906 L 189.367188 325.613281 L 198.917969 337.363281 L 204.625 337.363281 L 192.671875 323.03125 Z M 204.933594 313.433594 "/><path  fill="#fff" fill-opacity="1" d="M 227.664062 337.566406 C 225.226562 337.566406 223.089844 337.0625 221.253906 336.046875 C 219.421875 335.03125 217.992188 333.648438 216.964844 331.890625 C 215.941406 330.136719 215.425781 328.144531 215.425781 325.910156 L 215.425781 313.398438 L 219.90625 313.398438 L 219.90625 325.773438 C 219.90625 327.257812 220.246094 328.570312 220.929688 329.722656 C 221.613281 330.875 222.550781 331.777344 223.734375 332.441406 C 224.917969 333.101562 226.230469 333.429688 227.664062 333.429688 C 229.214844 333.429688 230.589844 333.101562 231.785156 332.441406 C 232.980469 331.777344 233.921875 330.875 234.605469 329.722656 C 235.289062 328.570312 235.632812 327.257812 235.632812 325.773438 L 235.632812 313.398438 L 239.9375 313.398438 L 239.9375 325.910156 C 239.9375 328.144531 239.425781 330.136719 238.398438 331.890625 C 237.375 333.648438 235.949219 335.03125 234.125 336.046875 C 232.304688 337.0625 230.148438 337.566406 227.664062 337.566406 "/><path  fill="#fff" fill-opacity="1" d="M 259.253906 337.363281 L 259.253906 317.535156 L 250.027344 317.535156 L 250.027344 313.433594 L 273.132812 313.433594 L 273.132812 317.535156 L 263.699219 317.535156 L 263.699219 337.363281 Z M 259.253906 337.363281 "/><path  fill="#fff" fill-opacity="1" d="M 293.714844 337.703125 C 291.730469 337.703125 289.878906 337.414062 288.160156 336.832031 C 286.4375 336.25 284.933594 335.414062 283.644531 334.320312 C 282.359375 333.226562 281.351562 331.921875 280.621094 330.40625 C 279.890625 328.890625 279.527344 327.210938 279.527344 325.363281 C 279.527344 323.585938 279.902344 321.953125 280.65625 320.460938 C 281.40625 318.964844 282.433594 317.671875 283.730469 316.578125 C 285.03125 315.484375 286.535156 314.636719 288.242188 314.03125 C 289.953125 313.425781 291.765625 313.125 293.679688 313.125 C 295.230469 313.125 296.703125 313.3125 298.105469 313.6875 C 299.507812 314.066406 300.789062 314.550781 301.953125 315.140625 C 303.113281 315.734375 304.058594 316.363281 304.789062 317.023438 L 302.226562 320.679688 C 301.472656 320.042969 300.652344 319.472656 299.765625 318.972656 C 298.875 318.46875 297.902344 318.078125 296.84375 317.792969 C 295.78125 317.507812 294.613281 317.363281 293.335938 317.363281 C 292.175781 317.363281 291.046875 317.546875 289.953125 317.914062 C 288.859375 318.277344 287.867188 318.808594 286.980469 319.5 C 286.089844 320.195312 285.382812 321.039062 284.859375 322.03125 C 284.335938 323.023438 284.074219 324.144531 284.074219 325.398438 C 284.074219 326.742188 284.347656 327.917969 284.894531 328.917969 C 285.441406 329.921875 286.1875 330.765625 287.132812 331.449219 C 288.078125 332.132812 289.144531 332.652344 290.328125 333.003906 C 291.515625 333.359375 292.734375 333.535156 293.988281 333.535156 C 295.355469 333.535156 296.5625 333.359375 297.609375 333.003906 C 298.660156 332.652344 299.589844 332.21875 300.394531 331.707031 C 301.207031 331.191406 301.941406 330.695312 302.601562 330.21875 L 304.722656 333.808594 C 304.058594 334.332031 303.171875 334.902344 302.054688 335.515625 C 300.9375 336.132812 299.667969 336.652344 298.242188 337.070312 C 296.820312 337.492188 295.308594 337.703125 293.714844 337.703125 "/><path  fill="#fff" fill-opacity="1" d="M 335.351562 313.433594 L 335.351562 323.484375 L 319.660156 323.484375 L 319.660156 313.433594 L 315.214844 313.433594 L 315.214844 337.363281 L 319.660156 337.363281 L 319.660156 327.652344 L 335.351562 327.652344 L 335.351562 337.363281 L 339.796875 337.363281 L 339.796875 313.433594 Z M 335.351562 313.433594 "/><path  fill="#fff" fill-opacity="1" d="M 405.464844 313.433594 L 405.472656 331.046875 L 387.894531 313.433594 L 383.550781 313.433594 L 383.550781 337.363281 L 387.960938 337.363281 L 387.929688 320.117188 L 405.464844 337.363281 L 409.875 337.363281 L 409.875 313.433594 Z M 405.464844 313.433594 "/><path  fill="#fff" fill-opacity="1" d="M 248.785156 298.878906 L 238.257812 288.332031 L 235.65625 288.332031 L 235.65625 302.667969 L 238.296875 302.667969 L 238.296875 292.355469 L 248.785156 302.667969 L 251.425781 302.667969 L 251.425781 288.332031 L 248.785156 288.332031 Z M 248.785156 298.878906 "/><path  fill="#fff" fill-opacity="1" d="M 284.785156 295.191406 C 284.171875 294.921875 283.472656 294.710938 282.695312 294.570312 C 281.917969 294.425781 281.117188 294.304688 280.300781 294.210938 C 279.726562 294.140625 279.183594 294.0625 278.671875 293.972656 C 278.160156 293.886719 277.710938 293.765625 277.328125 293.617188 C 276.949219 293.464844 276.644531 293.273438 276.417969 293.042969 C 276.191406 292.808594 276.082031 292.53125 276.082031 292.203125 C 276.082031 291.808594 276.242188 291.480469 276.5625 291.21875 C 276.882812 290.960938 277.320312 290.761719 277.871094 290.625 C 278.425781 290.488281 279.050781 290.421875 279.746094 290.421875 C 280.386719 290.421875 281.011719 290.492188 281.609375 290.636719 C 282.210938 290.78125 282.769531 290.996094 283.289062 291.28125 C 283.808594 291.570312 284.265625 291.921875 284.660156 292.347656 L 286.21875 290.441406 C 285.808594 289.949219 285.289062 289.53125 284.660156 289.183594 C 284.035156 288.835938 283.316406 288.5625 282.511719 288.375 C 281.707031 288.183594 280.8125 288.085938 279.828125 288.085938 C 278.898438 288.085938 278.035156 288.1875 277.238281 288.382812 C 276.4375 288.582031 275.738281 288.863281 275.128906 289.234375 C 274.519531 289.601562 274.050781 290.054688 273.714844 290.597656 C 273.382812 291.132812 273.214844 291.753906 273.214844 292.449219 C 273.214844 293.089844 273.355469 293.652344 273.644531 294.136719 C 273.929688 294.621094 274.339844 295.035156 274.875 295.378906 C 275.40625 295.71875 276.050781 295.996094 276.808594 296.207031 C 277.566406 296.417969 278.410156 296.578125 279.335938 296.6875 C 279.664062 296.714844 280.035156 296.75 280.441406 296.789062 C 280.851562 296.832031 281.261719 296.886719 281.671875 296.964844 C 282.082031 297.039062 282.457031 297.140625 282.796875 297.261719 C 283.140625 297.382812 283.410156 297.546875 283.617188 297.742188 C 283.820312 297.941406 283.925781 298.1875 283.925781 298.492188 C 283.925781 298.980469 283.726562 299.378906 283.328125 299.679688 C 282.933594 299.980469 282.4375 300.199219 281.84375 300.34375 C 281.25 300.484375 280.640625 300.558594 280.011719 300.558594 C 278.921875 300.558594 277.875 300.359375 276.878906 299.953125 C 275.882812 299.550781 274.898438 298.914062 273.929688 298.039062 L 272.457031 300.230469 C 273.070312 300.789062 273.75 301.269531 274.492188 301.664062 C 275.238281 302.058594 276.058594 302.359375 276.960938 302.566406 C 277.863281 302.769531 278.847656 302.871094 279.910156 302.871094 C 281.273438 302.871094 282.472656 302.679688 283.503906 302.296875 C 284.535156 301.917969 285.339844 301.375 285.921875 300.671875 C 286.5 299.96875 286.792969 299.136719 286.792969 298.183594 C 286.792969 297.402344 286.609375 296.78125 286.25 296.308594 C 285.886719 295.839844 285.398438 295.464844 284.785156 295.191406 "/><path  fill="#fff" fill-opacity="1" d="M 297.140625 296.523438 L 305.71875 296.523438 L 305.71875 294.148438 L 297.140625 294.148438 L 297.140625 290.75 L 306.765625 290.75 L 306.765625 288.332031 L 294.515625 288.332031 L 294.515625 302.667969 L 306.84375 302.667969 L 306.84375 300.25 L 297.140625 300.25 Z M 297.140625 296.523438 "/><path  fill="#fff" fill-opacity="1" d="M 327.148438 288.332031 L 317.832031 295.617188 L 317.832031 288.332031 L 315.167969 288.332031 L 315.167969 302.667969 L 317.832031 302.667969 L 317.832031 298.523438 L 321.53125 295.628906 L 327.25 302.667969 L 330.671875 302.667969 L 323.507812 294.082031 L 330.855469 288.332031 Z M 327.148438 288.332031 "/><path  fill="#fff" fill-opacity="1" d="M 351.179688 297.382812 C 350.878906 297.972656 350.453125 298.484375 349.910156 298.929688 C 349.363281 299.375 348.722656 299.71875 347.984375 299.964844 C 347.246094 300.210938 346.429688 300.332031 345.527344 300.332031 C 344.636719 300.332031 343.820312 300.210938 343.070312 299.964844 C 342.320312 299.71875 341.671875 299.375 341.132812 298.929688 C 340.59375 298.484375 340.175781 297.972656 339.882812 297.382812 C 339.589844 296.796875 339.445312 296.160156 339.445312 295.480469 C 339.445312 294.796875 339.589844 294.164062 339.882812 293.578125 C 340.175781 292.988281 340.59375 292.472656 341.132812 292.027344 C 341.671875 291.585938 342.320312 291.238281 343.070312 290.996094 C 343.820312 290.75 344.636719 290.625 345.527344 290.625 C 346.429688 290.625 347.246094 290.75 347.984375 290.996094 C 348.722656 291.238281 349.363281 291.585938 349.910156 292.027344 C 350.453125 292.472656 350.878906 292.988281 351.179688 293.578125 C 351.480469 294.164062 351.628906 294.796875 351.628906 295.480469 C 351.628906 296.160156 351.480469 296.796875 351.179688 297.382812 M 353.675781 292.582031 C 353.242188 291.6875 352.628906 290.902344 351.84375 290.226562 C 351.058594 289.550781 350.132812 289.027344 349.058594 288.648438 C 347.988281 288.273438 346.808594 288.085938 345.527344 288.085938 C 344.242188 288.085938 343.066406 288.273438 341.992188 288.648438 C 340.921875 289.027344 339.992188 289.550781 339.199219 290.226562 C 338.40625 290.902344 337.796875 291.6875 337.367188 292.582031 C 336.9375 293.476562 336.71875 294.441406 336.71875 295.480469 C 336.71875 296.515625 336.9375 297.484375 337.367188 298.378906 C 337.796875 299.273438 338.40625 300.058594 339.199219 300.730469 C 339.992188 301.40625 340.921875 301.933594 341.992188 302.308594 C 343.066406 302.683594 344.242188 302.871094 345.527344 302.871094 C 346.808594 302.871094 347.988281 302.683594 349.058594 302.308594 C 350.132812 301.933594 351.058594 301.40625 351.84375 300.730469 C 352.628906 300.058594 353.242188 299.273438 353.675781 298.378906 C 354.113281 297.484375 354.332031 296.515625 354.332031 295.480469 C 354.332031 294.441406 354.113281 293.476562 353.675781 292.582031 "/><path  fill="#fff" fill-opacity="1" d="M 260.609375 302.667969 L 263.273438 302.667969 L 263.273438 288.332031 L 260.609375 288.332031 Z M 260.609375 302.667969 "/><path  fill="#fff" fill-opacity="1" d="M 364.066406 313.433594 L 359.347656 313.433594 L 347.585938 337.363281 L 352.167969 337.363281 L 361.59375 317.964844 L 369.109375 333.5 L 359.796875 333.5 L 358.15625 337.363281 L 375.757812 337.363281 Z M 364.066406 313.433594 "/></svg>
+      <select class="langsel" aria-label="Language"><option value="en">English</option><option value="ja">日本語</option></select>
+    </div>
+    <div class="w-body">
+      <div class="eyebrow" data-i18n="w_eye">Hirafu Free Shuttle</div>
+      <h1 class="bb" data-i18n="w_h1">Welcome<br>to Niseko</h1>
+      <p class="lead" data-i18n="w_lead">Your tag is now your shuttle guide. Live buses, your stop, and the best of Niseko — nothing to install.</p>
+    </div>
+    <div class="key" aria-label="Niseko Key">
+      <div class="row"><span class="k1 bb" data-i18n="key_t">Niseko Key</span><span class="verified"><svg class="ic"><use href="#i-check"/></svg><span data-i18n="verified">Verified tag</span></span></div>
+      <div class="num" id="keyNum">NO. •••• •••• 0421</div>
+      <div class="by" data-i18n="key_by">SECURED BY NIJI BRAND TRUST PLATFORM</div>
+    </div>
+    <div class="w-cta">
+      <button class="btn light" onclick="go('ob1')" data-i18n="w_cta">Begin</button>
+      <button class="btn quiet" onclick="go('home')" data-i18n="w_skip">Go straight to the buses</button>
+      <div class="privacy"><svg class="ic"><use href="#i-lock"/></svg><span data-i18n="w_priv">Private by design. Your tag holds no personal data — we never ask for your name, email or phone.</span></div>
+    </div>
+    <div class="sosbar"><span data-i18n="sos">In an emergency</span><a href="tel:110"><svg class="ic"><use href="#i-phone"/></svg>110</a></div>
+  </section>
+
+  <!-- 1–2 OPTIONAL PERSONALIZE（UX資料の最小項目。2画面×2問に分け、いつでも閉じられる） -->
+  <section class="screen ob" data-s="ob1">
+    <div style="padding:56px 22px 18px;display:flex;justify-content:space-between;align-items:center"><span class="eyebrow" data-i18n="ob_eye">Personalize · optional</span><span class="back" onclick="go('home')" data-i18n="later">Later</span></div>
+    <div class="dots"><i class="on"></i><i></i></div>
+    <div class="q scroll">
+      <h3 data-i18n="ob1_h">Where is home for you?</h3>
+      <p class="sub" data-i18n="ob1_s">Helps the town plan better transport. Anonymous.</p>
+      <div class="choices" data-g="a"><button>Australia</button><button>Japan</button><button>Hong Kong</button><button>Singapore</button><button>United States</button><button data-i18n="other">Elsewhere</button></div>
+      <h3 style="margin-top:30px;font-size:20px" data-i18n="ob2_h">Your age group</h3>
+      <div class="choices" data-g="b" style="grid-template-columns:repeat(3,1fr)"><button>–19</button><button>20s</button><button>30s</button><button>40s</button><button>50s</button><button>60+</button></div>
+    </div>
+    <div class="nav"><button class="btn navy" onclick="go('ob2')" data-i18n="next">Continue</button></div>
+  </section>
+  <section class="screen ob" data-s="ob2">
+    <div style="padding:56px 22px 18px;display:flex;justify-content:space-between;align-items:center"><span class="eyebrow" data-i18n="ob_eye">Personalize · optional</span><span class="back" onclick="go('home')" data-i18n="later">Later</span></div>
+    <div class="dots"><i class="on"></i><i class="on"></i></div>
+    <div class="q scroll">
+      <h3 data-i18n="ob3_h">How long is your stay?</h3>
+      <div class="choices" data-g="c"><button data-i18n="n1">1–2 nights</button><button data-i18n="n2">3–4 nights</button><button data-i18n="n3">5–7 nights</button><button data-i18n="n4">8 nights or more</button></div>
+      <h3 style="margin-top:30px;font-size:20px" data-i18n="ob4_h">Where are you staying?</h3>
+      <div class="choices" data-g="d"><button>Upper Hirafu</button><button>Middle Hirafu</button><button>Lower Hirafu</button><button>Kabayama</button><button>Kutchan Town</button><button data-i18n="other">Elsewhere</button></div>
+    </div>
+    <div class="nav"><button class="btn navy" onclick="go('home')" data-i18n="done">Done</button></div>
+  </section>
+
+  <!-- 3 HOME（聞かれる前に答える：最寄り停留所の次の便） -->
+  <section class="screen" data-s="home">
+    <div class="scroll">
+      <div class="top"><div><div class="eyebrow" id="greet">Good afternoon</div><h2 class="bb" style="margin-top:6px" data-i18n="h_title">Your shuttle</h2></div><button class="iconbtn" aria-label="Language" onclick="toggleLang()"><svg class="ic"><use href="#i-globe"/></svg></button></div>
+      <div class="nexthero">
+        <div style="display:flex;justify-content:space-between;align-items:center"><span class="eyebrow" data-i18n="nearest">Nearest stop</span><span class="live"><i></i><span data-i18n="live">Live</span></span></div>
+        <div class="stop">RHYTHM <span style="opacity:.6;font-weight:400">/ リズム</span></div>
+        <div class="walk" data-i18n="walk">3 min walk</div>
+        <div class="dep" onclick="openLine('lower')" style="cursor:pointer"><div class="ln"><span class="sw" style="background:var(--l-lower)"></span><span class="bb" style="font-size:19px">LOWER HIRAFU</span></div><div class="min bb">4<small data-i18n="min">MIN</small></div></div>
+        <div class="dep" onclick="openLine('middle')" style="cursor:pointer"><div class="ln"><span class="sw" style="background:var(--l-middle)"></span><span class="bb" style="font-size:19px">MIDDLE HIRAFU</span></div><div class="min bb">11<small data-i18n="min">MIN</small></div></div>
+      </div>
+      <div class="section"><span class="eyebrow" data-i18n="all_lines">All lines</span><span class="eyebrow" style="letter-spacing:.08em;text-transform:none" data-i18n="free">Free · every day in season</span></div>
+      <div class="lines">
+        <a onclick="openLine('lower')"><span class="bar" style="background:var(--l-lower)"></span><div><div class="nm bb">LOWER HIRAFU LINE</div><div class="jp">ロワーひらふライン</div></div><div class="meta"><b>4 min</b><span data-i18n="next_at">next at Rhythm</span></div><svg class="ic chev"><use href="#i-chev"/></svg></a>
+        <a onclick="openLine('middle')"><span class="bar" style="background:var(--l-middle)"></span><div><div class="nm bb">MIDDLE HIRAFU LINE</div><div class="jp">ミドルひらふライン</div></div><div class="meta"><b>11 min</b><span data-i18n="until16">until 16:00</span></div><svg class="ic chev"><use href="#i-chev"/></svg></a>
+        <a onclick="openLine('kabayama')"><span class="bar" style="background:var(--l-kabayama)"></span><div><div class="nm bb">KABAYAMA LINE</div><div class="jp">樺山ライン</div></div><div class="meta"><b>18 min</b><span data-i18n="interval3050">every 30–50 min</span></div><svg class="ic chev"><use href="#i-chev"/></svg></a>
+        <a onclick="openLine('east')"><span class="bar" style="background:var(--l-east)"></span><div><div class="nm bb">HIRAFU EAST LINE</div><div class="jp">ひらふイーストライン</div></div><div class="meta"><b>—</b><span data-i18n="nobus">no bus now</span></div><svg class="ic chev"><use href="#i-chev"/></svg></a>
+        <a onclick="openLine('downtown')"><span class="bar" style="background:var(--l-downtown)"></span><div><div class="nm bb">DOWNTOWN LINE</div><div class="jp">くっちゃんナイト号 / Kutchan Night Bus</div></div><div class="meta"><b>17:30</b><span data-i18n="from_wc">from Welcome Center</span></div><svg class="ic chev"><use href="#i-chev"/></svg></a>
+      </div>
+      <div class="foot"><svg class="ic"><use href="#i-shield"/></svg><span data-i18n="foot">Secured by Niji Brand Trust Platform · Private by design</span></div>
+    </div>
+    <nav class="tabbar"><button class="on" data-go="home"><svg class="ic"><use href="#i-bus"/></svg><span data-i18n="tab_ride">Ride</span></button><button data-go="explore"><svg class="ic"><use href="#i-map"/></svg><span data-i18n="tab_explore">Explore</span></button><button data-go="help"><svg class="ic"><use href="#i-help"/></svg><span data-i18n="tab_help">Help</span></button></nav>
+  </section>
+
+  <!-- 4 LINE DETAIL（公式サイト準拠の番号一覧＋ライブ） -->
+  <section class="screen" data-s="line">
+    <div class="scroll" id="lineScroll">
+      <div class="lhead"><div class="back" onclick="go('home')"><svg class="ic" style="width:16px;height:16px"><use href="#i-back"/></svg><span data-i18n="back">Back</span></div><h2 class="bb" id="lName">LOWER HIRAFU LINE</h2><div class="jp" id="lJp">ロワーひらふライン</div><div class="rule" id="lRule"></div></div>
+      <div class="eta" id="etaBox"><div><div class="t" data-i18n="eta_t">Bus to your stop</div><div class="v" id="etaStop">Aspenwood</div></div><div class="big bb" id="etaMin">6<small>MIN</small></div></div>
+      <div class="toggle"><span id="alertTxt">Alert me one stop before Aspenwood</span><span class="sw-t on" id="alertSw" role="switch" aria-checked="true" onclick="toggleAlert()"></span></div>
+      <ul class="stops" id="stops"></ul>
+      <div class="hours" id="hours"></div>
+      <div class="near" onclick="go('explore')" style="cursor:pointer"><div class="img"><svg viewBox="0 0 340 110" preserveAspectRatio="none" aria-hidden="true"><path d="M0 90 70 52l40 20 60-46 70 50 40-18 60 30v22H0z" fill="#b9c7d8"/><path d="M170 26l18 14-18-4-14 8z" fill="#fff" opacity=".9"/><path d="M0 110V96l90-20 80 18 90-22 80 20v18z" fill="#fff"/></svg></div><div class="tx"><b data-i18n="near_b">Around your stop</b><p data-i18n="near_p">Dining, onsen and activities near Aspenwood on the Niseko Digital Map.</p></div></div>
+    </div>
+    <nav class="tabbar"><button class="on" data-go="home"><svg class="ic"><use href="#i-bus"/></svg><span data-i18n="tab_ride">Ride</span></button><button data-go="explore"><svg class="ic"><use href="#i-map"/></svg><span data-i18n="tab_explore">Explore</span></button><button data-go="help"><svg class="ic"><use href="#i-help"/></svg><span data-i18n="tab_help">Help</span></button></nav>
+  </section>
+
+  <!-- 5 EXPLORE（KTA依頼：Niseko Digital Map） -->
+  <section class="screen" data-s="explore">
+    <div class="top"><div><div class="eyebrow" data-i18n="ex_eye">Curated by Kutchan Tourism Association</div><h2 class="bb" style="margin-top:6px" data-i18n="ex_t">Explore Niseko</h2></div><a class="iconbtn" id="mapExt" href="https://kta.evoke.jp/?lang=en" target="_blank" rel="noopener" aria-label="Open full screen"><svg class="ic"><use href="#i-ext"/></svg></a></div>
+    <div class="cats"><button class="on" data-i18n="c_all">All</button><button data-i18n="c_food">Dining</button><button data-i18n="c_onsen">Onsen</button><button data-i18n="c_act">Activities</button><button data-i18n="c_lift">Lift status</button><button data-i18n="c_taxi">Taxi &amp; car hire</button></div>
+    <div class="mapframe"><iframe id="mapFrame" title="Niseko Digital Map" loading="lazy" src="https://kta.evoke.jp/?lang=en"></iframe></div>
+    <div class="mapnote"><span data-i18n="map_note">Map provided by the Niseko Digital Map.</span><a id="mapExt2" href="https://kta.evoke.jp/?lang=en" target="_blank" rel="noopener" data-i18n="map_open">Open full screen</a></div>
+    <nav class="tabbar"><button data-go="home"><svg class="ic"><use href="#i-bus"/></svg><span data-i18n="tab_ride">Ride</span></button><button class="on" data-go="explore"><svg class="ic"><use href="#i-map"/></svg><span data-i18n="tab_explore">Explore</span></button><button data-go="help"><svg class="ic"><use href="#i-help"/></svg><span data-i18n="tab_help">Help</span></button></nav>
+  </section>
+
+  <!-- 6 HELP -->
+  <section class="screen" data-s="help">
+    <div class="scroll">
+      <div class="top"><div><div class="eyebrow" data-i18n="help_eye">24 hours</div><h2 class="bb" style="margin-top:6px" data-i18n="help_t">Help &amp; emergency</h2></div></div>
+      <a class="helpitem sos" href="tel:110"><svg class="ic"><use href="#i-phone"/></svg><div><b data-i18n="p110">Police · 110</b><span data-i18n="p110s">Accidents, crime, lost persons</span></div></a>
+      <a class="helpitem" href="tel:119"><svg class="ic"><use href="#i-phone"/></svg><div><b data-i18n="p119">Fire &amp; ambulance · 119</b><span data-i18n="p119s">Medical emergencies</span></div></a>
+      <a class="helpitem" href="tel:09073552425"><svg class="ic"><use href="#i-bus"/></svg><div><b data-i18n="op1">Hirafu Free Shuttle</b><span>090-7355-2425</span></div></a>
+      <a class="helpitem" href="tel:0136555601"><svg class="ic"><use href="#i-bus"/></svg><div><b data-i18n="op2">Kutchan Night Bus</b><span>0136-55-5601</span></div></a>
+      <div class="trust"><b><svg class="ic" style="width:18px;height:18px"><use href="#i-shield"/></svg><span data-i18n="tr_b">Private by design</span></b><p data-i18n="tr_p">Your Niseko Key carries only a random number — no name, no contact details, no location history tied to you. Tags are verified as genuine through Niji Brand Trust Platform.</p></div>
+      <div class="foot" style="padding-top:0"><span data-i18n="help_note">Numbers from the official Hirafu Free Shuttle website.</span></div>
+    </div>
+    <nav class="tabbar"><button data-go="home"><svg class="ic"><use href="#i-bus"/></svg><span data-i18n="tab_ride">Ride</span></button><button data-go="explore"><svg class="ic"><use href="#i-map"/></svg><span data-i18n="tab_explore">Explore</span></button><button class="on" data-go="help"><svg class="ic"><use href="#i-help"/></svg><span data-i18n="tab_help">Help</span></button></nav>
+  </section>
+</div>
+
+
+<script>
+const ROUTES={
+ lower:{en:"LOWER HIRAFU LINE",ja:"ロワーひらふライン",c:"var(--l-lower)",bus:1,mine:2,stops:[["Hirafu Gondola Station","ヒラフゴンドラ乗り場"],["RHYTHM","リズム"],["Aspenwood","アスペンウッド"],["Yukemuri-St","ゆけむり通り"],["Koharuya","心晴家"],["Yukon Apartment","ユーコンアパート"],["Neyuki","根雪"],["Hirafu Police Box","ひらふ交番"]],h:["About every 20–30 min · 8:00–20:00 (peak period until 22:00, when all service ends)","約20〜30分間隔・8:00〜20:00（増便期は22:00に全運行終了）"]},
+ middle:{en:"MIDDLE HIRAFU LINE",ja:"ミドルひらふライン",c:"var(--l-middle)",bus:2,mine:5,stops:[["Momiji","紅葉近辺"],["Woody Note","ウッディーノート"],["Aspect","アスペクト"],["SHINKA NISEKO","シンカ"],["Hirafu Gondola Station","ヒラフゴンドラ乗り場"],["RHYTHM","リズム"]],h:["About every 20–30 min · 8:00–16:00. After 4 pm, joint service with Lower Hirafu Line.","約20〜30分間隔・8:00〜16:00。16時以降はロワーひらふラインと共同運行"]},
+ kabayama:{en:"KABAYAMA LINE",ja:"樺山ライン",c:"var(--l-kabayama)",bus:3,mine:5,stops:[["Hirafu Gondola Station","ヒラフゴンドラ乗り場"],["SUN SPORTS LAND","サンスポーツランド"],["Kabayama Kita","樺山北"],["The Orchards Niseko","オーチャード"],["MIRU Niseko","ミルニセコ"],["Kabayama Elementary School","樺山小学校"],["Kabayama Kita","樺山北"],["Ramina","ラミーナ"],["AYA Niseko","綾ニセコ"],["Hirafu Police Box","ひらふ交番"]],h:["About every 30–50 min · 8:00–20:00 (peak period until 22:00)","約30〜50分間隔・8:00〜20:00（増便期 22:00）"]},
+ east:{en:"HIRAFU EAST LINE",ja:"ひらふイーストライン",c:"var(--l-east)",bus:null,mine:3,stops:[["Tokyu Niseko Sanso","東急ニセコ山荘"],["Niseko Adventure Center","NAC"],["Izumikyo","泉居"],["Stay","ステイ"],["Niseko International Clinic","ニセコインターナショナルクリニック"],["Seven Eleven","セブンイレブン"],["LAWSON","ローソン"],["Hirafu Gondola Station","ヒラフゴンドラ乗り場"]],h:["About every 30–50 min · 8:00–20:00 (peak period until 22:00)","約30〜50分間隔・8:00〜20:00（増便期 22:00）"]},
+ downtown:{en:"DOWNTOWN LINE",ja:"くっちゃんナイト号",c:"var(--l-downtown)",bus:0,mine:9,start:"S",stops:[["Hirafu Welcome Center","ひらふウェルカムセンター"],["Hirafu Intersection","ひらふ十字街"],["Niseko Adventure Center","NAC"],["Izumikyo","泉居"],["Niseko International Clinic","ニセコインターナショナルクリニック"],["Boken Kazoku","冒険家族"],["Yamato Transport","ヤマト運輸"],["Max Valu","マックスバリュ"],["Lucky","ラッキー"],["Information Center Plat","まちの駅ぷらっと"],["JR Kutchan Station","倶知安駅"]],h:["Outward route (to JR Kutchan Station).","往路（倶知安駅方面）"]}
+};
+const T={ja:{w_eye:"ひらふ無料循環バス",w_h1:"ようこそ<br>ニセコへ",w_lead:"このタグが、あなたのシャトルガイドになりました。バスの現在地、降りる停留所、ニセコのおすすめまで。インストールは不要です。",key_t:"Niseko Key",verified:"本物のタグを確認",key_by:"SECURED BY NIJI BRAND TRUST PLATFORM",w_cta:"はじめる",w_skip:"そのままバスを見る",w_priv:"プライバシーを最初から守る設計です。タグに個人情報はなく、氏名・メール・電話番号もお聞きしません。",sos:"緊急のときは",ob_eye:"任意の設定",later:"あとで",ob1_h:"どちらからお越しですか？",ob1_s:"町の交通をより良くするために使います。匿名です。",other:"その他",ob2_h:"年代",next:"次へ",ob3_h:"滞在は何泊ですか？",n1:"1〜2泊",n2:"3〜4泊",n3:"5〜7泊",n4:"8泊以上",ob4_h:"滞在エリア",done:"完了",h_title:"シャトル",nearest:"最寄りの停留所",live:"ライブ",walk:"徒歩3分",min:"分",all_lines:"すべての路線",free:"期間中毎日・無料",next_at:"リズムまで",until16:"16:00まで",interval3050:"30〜50分間隔",nobus:"運行なし",from_wc:"ウェルカムセンター発",foot:"Secured by Niji Brand Trust Platform・プライバシーを守る設計",tab_ride:"乗る",tab_explore:"探す",tab_help:"困ったとき",back:"戻る",eta_t:"降りる停留所までのバス",near_b:"降りる停留所の周辺",near_p:"アスペンウッド周辺の飲食店・温泉・アクティビティを、ニセコデジタルマップで。",ex_eye:"倶知安観光協会のおすすめ",ex_t:"ニセコを探す",c_all:"すべて",c_food:"飲食",c_onsen:"温泉",c_act:"アクティビティ",c_lift:"リフト運行",c_taxi:"タクシー・レンタカー",map_note:"地図：ニセコデジタルマップ",map_open:"全画面で開く",help_eye:"24時間",help_t:"困ったとき・緊急",p110:"警察・110",p110s:"事故・事件・迷子",p119:"消防・救急・119",p119s:"急病・けが",op1:"ひらふ無料循環バス",op2:"くっちゃんナイト号",tr_b:"プライバシーを守る設計",tr_p:"Niseko Keyが持つのはランダムな番号だけです。氏名・連絡先・あなたに紐付く移動履歴は持ちません。タグはNiji Brand Trust Platformで本物であることを確認しています。",help_note:"電話番号はひらふ無料循環バス公式サイトの記載です。",toast_b:"次があなたの停留所です",toast_s:"アスペンウッド・お降りの準備を"},en:{}};
+document.querySelectorAll('[data-i18n]').forEach(e=>{if(!(e.dataset.i18n in T.en))T.en[e.dataset.i18n]=e.innerHTML});
+let lang='en',cur='lower',alertOn=true;
+function setLang(l){lang=l;document.documentElement.lang=l;document.querySelectorAll('[data-i18n]').forEach(e=>{const v=T[l][e.dataset.i18n];if(v!==undefined)e.innerHTML=v});document.querySelectorAll('.langsel').forEach(s=>s.value=l);const u='https://kta.evoke.jp/?lang='+(l==='ja'?'ja':'en');['mapExt','mapExt2'].forEach(id=>document.getElementById(id).href=u);const f=document.getElementById('mapFrame');if(f&&f.src!==u)f.src=u;greet();renderLine()}
+function toggleLang(){setLang(lang==='en'?'ja':'en')}
+document.querySelectorAll('.langsel').forEach(s=>s.onchange=()=>setLang(s.value));
+function greet(){const h=new Date().getHours();const g=lang==='ja'?(h<11?'おはようございます':h<17?'こんにちは':'こんばんは'):(h<11?'Good morning':h<17?'Good afternoon':'Good evening');document.getElementById('greet').textContent=g}
+function go(s){document.querySelectorAll('.screen').forEach(x=>x.classList.toggle('on',x.dataset.s===s));}
+document.querySelectorAll('.tabbar button').forEach(b=>b.onclick=()=>go(b.dataset.go));
+function renderLine(){const r=ROUTES[cur],ja=lang==='ja';document.getElementById('lName').textContent=r.en;document.getElementById('lJp').textContent=r.ja;document.getElementById('lRule').style.background=r.c;document.getElementById('lineScroll').style.setProperty('--lc',r.c);
+ const ul=document.getElementById('stops');ul.innerHTML='';
+ r.stops.forEach((s,i)=>{const no=r.start?(i===0?'S':i):i+1;const li=document.createElement('li');let st='';
+  if(r.bus===i){li.className='bus';st='<i></i>'+(ja?'バスはここ':'Bus here')}
+  else if(r.mine===i){li.className='mine';st=ja?'降車':'MY STOP'}
+  else if(r.bus!==null&&i>r.bus){st=((i-r.bus)*3)+(ja?' 分':' min')}
+  if(r.mine===i&&r.bus===i){st='<i></i>'+(ja?'バスはここ':'Bus here')}
+  li.innerHTML='<span class="no">'+no+'</span><span class="nm">'+(ja?s[1]:s[0])+'<small>'+(ja?s[0]:s[1])+'</small></span><span class="st">'+st+'</span>';
+  li.onclick=()=>{r.mine=i;renderLine()};ul.appendChild(li)});
+ const m=r.stops[r.mine];const name=ja?m[1]:m[0];
+ document.getElementById('etaStop').textContent=name;
+ const mins=r.bus===null?null:Math.max(1,(r.mine-r.bus)*3);
+ document.getElementById('etaMin').innerHTML=mins===null||r.mine<r.bus?'—':mins+'<small>'+(ja?'分':'MIN')+'</small>';
+ document.getElementById('alertTxt').textContent=ja?name+' の1つ手前でお知らせ':'Alert me one stop before '+name;
+ document.getElementById('hours').textContent=ja?r.h[1]:r.h[0];}
+function openLine(id){cur=id;renderLine();go('line');document.getElementById('lineScroll').scrollTop=0}
+function toggleAlert(){alertOn=!alertOn;const s=document.getElementById('alertSw');s.classList.toggle('on',alertOn);s.setAttribute('aria-checked',alertOn)}
+function demoToast(){openLine('lower');const t=document.getElementById('toast');setTimeout(()=>t.classList.add('show'),400);setTimeout(()=>t.classList.remove('show'),3800)}
+document.querySelectorAll('.choices').forEach(g=>g.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;g.querySelectorAll('button').forEach(x=>x.classList.remove('on'));b.classList.add('on')}));
+document.querySelectorAll('.cats button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.cats button').forEach(x=>x.classList.remove('on'));b.classList.add('on')});
+/* gentle snowfall (respects reduced motion) */
+(()=>{const c=document.getElementById('snow');const x=c.getContext('2d');const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;let W,H,f=[];function sz(){W=c.width=c.offsetWidth*devicePixelRatio;H=c.height=c.offsetHeight*devicePixelRatio}sz();addEventListener('resize',sz);
+ for(let i=0;i<46;i++)f.push({x:Math.random(),y:Math.random(),r:(Math.random()*1.6+.5),s:Math.random()*.25+.08,d:Math.random()*Math.PI*2});
+ function draw(){x.clearRect(0,0,W,H);x.fillStyle='rgba(255,255,255,.9)';f.forEach(p=>{
+   // keep the logo area clear (ロゴ周辺に図形を置かない)
+   const px=p.x*W,py=p.y*H;if(px<190*devicePixelRatio&&py<150*devicePixelRatio)return;
+   x.beginPath();x.arc(px,py,p.r*devicePixelRatio,0,7);x.fill()});}
+ function step(){f.forEach(p=>{p.y+=p.s/H*devicePixelRatio*3;p.d+=.01;p.x+=Math.sin(p.d)*.0004;if(p.y>1){p.y=0;p.x=Math.random()}});draw();requestAnimationFrame(step)}
+ reduce?draw():step()})();
+greet();renderLine();
+
+/* ===== デモ用: バスが進む・降車通知 ===== */
+(()=>{const q=new URLSearchParams(location.search);const k=(q.get('k')||'').replace(/\D/g,'').slice(-4);
+ if(k.length===4)document.getElementById('keyNum').textContent='NO. •••• •••• '+k;})();
+function showToast(){const r=ROUTES[cur],ja=lang==='ja',m=r.stops[r.mine];
+ const t=document.getElementById('toast');t.querySelector('b').textContent=ja?'次があなたの停留所です':'Next stop is yours';
+ t.querySelector('span').textContent=ja?(m[1]+'・お降りの準備を'):(m[0]+' · please get ready');
+ if(navigator.vibrate)try{navigator.vibrate(200)}catch(e){}
+ t.classList.add('show');setTimeout(()=>t.classList.remove('show'),4500)}
+demoToast=function(){openLine('lower');setTimeout(showToast,400)};
+const _openLine=openLine;openLine=function(id){const r=ROUTES[id];if(r.bus!==null)r.bus=Math.max(0,r.mine-3);_openLine(id)};
+setInterval(()=>{Object.keys(ROUTES).forEach(id=>{const r=ROUTES[id];if(r.bus===null)return;
+  r.bus=(r.bus+1)%r.stops.length;
+  const onLine=document.querySelector('.screen.on')?.dataset.s==='line'&&id===cur;
+  if(onLine&&alertOn&&r.bus===r.mine-1)showToast();});
+ if(document.querySelector('.screen.on')?.dataset.s==='line')renderLine();},6000);
+/* URLで画面を指定できる（実装確認・画像書き出し用）: ?screen=home&lang=ja&line=kabayama&toast=1&shot=1
+   shot=1 は端末枠と右の説明パネルを消し、画面だけを表示する */
+(()=>{const q=new URLSearchParams(location.search);
+ if(q.get('shot')){document.body.classList.add('shot');const map=document.querySelector('.mapframe');map.innerHTML='<div class="mapph"><svg class="ic"><use href="#i-map"/></svg><b>Niseko Digital Map</b><span>kta.evoke.jp をここに埋め込み<br>（表示許可の依頼が必要）</span></div>'}
+ if(q.get('lang'))setLang(q.get('lang'));
+ if(q.get('line'))cur=q.get('line'),renderLine();
+ const s=q.get('screen');if(s){s==='line'?openLine(cur):go(s)}
+ if(q.get('toast'))document.getElementById('toast').classList.add('show');})();
+</script>
+</body>
+</html>
