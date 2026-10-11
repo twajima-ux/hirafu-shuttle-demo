@@ -199,7 +199,7 @@ html[lang=ja] .w-body h1{font-size:40px;line-height:1.25;font-weight:500;letter-
 .tabbar button{flex:1;border:0;background:transparent;padding:6px 0;font:500 10.5px "Noto Sans JP";color:var(--ink-3);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;letter-spacing:.04em}
 .tabbar button.on{color:var(--navy)}
 .tabbar .ic{width:22px;height:22px}
-/* onboarding (optional personalize) */
+/* アンケート（2026-10-12: 試験公開版 WelcomeFlow.tsx と同じく5問すべて必須。飛ばす導線なし） */
 .ob{background:var(--paper)}
 .ob .q{padding:0 22px}
 .ob h3{font-size:26px;line-height:1.15;font-weight:500;color:var(--navy);margin-top:10px}
@@ -211,6 +211,15 @@ html[lang=ja] .w-body h1{font-size:40px;line-height:1.25;font-weight:500;letter-
 .dots i{height:3px;flex:1;border-radius:2px;background:var(--line);transition:background .3s}
 .dots i.on{background:var(--navy)}
 .ob .nav{margin-top:auto;padding:18px 22px 26px;display:flex;gap:10px}
+/* 2026-10-12: アンケート中も最上部に緊急ボタン（起動画面と同じ部品。白地の画面なので帯は紺）。
+   未回答の間はボタンの上に「すべての質問に答えてください」を出し、ボタンは押せない（試験公開版の RequiredAction と同じ） */
+.ob .ebar{background:var(--navy)}
+.ob .ebar + .dots{padding-top:18px;padding-bottom:18px}
+.ob .sub.s2{color:var(--ink-2)}
+.ob .sub.join{font-size:12.5px;margin-top:6px;color:#6B7588}
+.ob .nav.reqnav{flex-direction:column;gap:0}
+.req{margin:0 0 8px;min-height:1.5em;text-align:center;font-size:13px;line-height:1.5;font-weight:500;color:var(--ink-2)}
+.btn:disabled{opacity:.6;cursor:default}.btn:disabled:active{transform:none}
 /* toast (drop-off alert preview) */
 .toast{position:absolute;left:12px;right:12px;top:14px;background:rgba(15,27,45,.92);backdrop-filter:blur(14px);color:#fff;border-radius:20px;padding:14px 16px;display:flex;gap:12px;align-items:center;transform:translateY(-130%);transition:transform .5s var(--ease);z-index:5;box-shadow:0 12px 30px rgba(0,0,0,.25)}
 .toast{opacity:0}.toast.show{transform:none;opacity:1}
@@ -283,34 +292,38 @@ body.shot .screen{transition:none}
     </div>
     <div class="w-cta">
       <button class="btn light" onclick="go('ob1')" data-i18n="w_cta">Begin</button>
-      <button class="btn quiet" onclick="go('home')" data-i18n="w_skip">Go straight to the buses</button>
       <div class="privacy"><svg class="ic"><use href="#i-lock"/></svg><span data-i18n="w_priv">Private by design. Your tag holds no personal data — we never ask for your name, email or phone.</span></div>
     </div>
   </section>
 
-  <!-- 1–2 OPTIONAL PERSONALIZE（UX資料の最小項目。2画面×2問に分け、いつでも閉じられる） -->
+  <!-- 1–2 アンケート（2026-10-12: 試験公開版 niji/guest-pwa の WelcomeFlow.tsx・strings.json と同じ5問・同じ文言。
+       1ページ目＝国籍、2ページ目＝泊数・滞在エリア・来訪回数・年代。5問すべて必須で、「あとで」「任意」の表示は無い。
+       アンケート中も最上部の緊急ボタン（110・119・クリニック）は押せる＝電話の確認画面が開く） -->
   <section class="screen ob" data-s="ob1">
-    <div style="padding:56px 22px 18px;display:flex;justify-content:space-between;align-items:center"><span class="eyebrow" data-i18n="ob_eye">Personalize · optional</span><span class="back" onclick="go('home')" data-i18n="later">Later</span></div>
-    <div class="dots"><i class="on"></i><i></i></div>
+    <div class="ebar"><a href="tel:110"><svg class="ic"><use href="#i-phone"/></svg><span data-i18n="em_p">Police 110</span></a><a href="tel:119"><svg class="ic"><use href="#i-phone"/></svg><span data-i18n="em_f">Ambulance 119</span></a><a href="tel:0136215454"><svg class="ic"><use href="#i-phone"/></svg><span data-i18n="em_c">Clinic</span></a></div>
+    <div class="dots" aria-hidden="true"><i class="on"></i><i></i></div>
     <div class="q scroll">
-      <h3 data-i18n="ob1_h">Where is home for you?</h3>
-      <p class="sub" data-i18n="ob1_s">Helps the town plan better transport. Anonymous.</p>
-      <div class="choices" data-g="a"><button>Australia</button><button>United States</button><button>Hong Kong</button><button>Taiwan</button><button>Singapore</button><button data-i18n="c_jp">Japan</button><button data-i18n="other" style="grid-column:1/-1">Elsewhere</button></div>
+      <h3 id="q-nat" data-i18n="ob1_h">Where is home for you?</h3>
+      <p class="sub s2" data-i18n="ob1_s">Takes under a minute. Helps the town plan better transport. Your answers are saved with your tag's ID numbers and used only for town-wide totals — never to identify you.</p>
+      <p class="sub join" data-i18n="ob1_join">Totals may combine your answers with records of when and where your tag was detected by readers on shuttles and at stops.</p>
+      <div class="choices" data-g="a" role="group" aria-labelledby="q-nat"><button data-i18n="c_au">Australia</button><button data-i18n="c_us">United States</button><button data-i18n="c_hk">Hong Kong</button><button data-i18n="c_tw">Taiwan</button><button data-i18n="c_sg">Singapore</button><button data-i18n="c_jp">Japan</button><button data-i18n="other" style="grid-column:1/-1">Elsewhere</button></div>
     </div>
-    <div class="nav"><button class="btn navy" onclick="go('ob2')" data-i18n="next">Continue</button></div>
+    <div class="nav reqnav"><p class="req" id="req1" role="status"></p><button class="btn navy" id="next1" disabled aria-describedby="req1" onclick="go('ob2')" data-i18n="next">Continue</button></div>
   </section>
   <section class="screen ob" data-s="ob2">
-    <div style="padding:56px 22px 18px;display:flex;justify-content:space-between;align-items:center"><span class="eyebrow" data-i18n="ob_eye">Personalize · optional</span><span class="back" onclick="go('home')" data-i18n="later">Later</span></div>
-    <div class="dots"><i class="on"></i><i class="on"></i></div>
+    <div class="ebar"><a href="tel:110"><svg class="ic"><use href="#i-phone"/></svg><span data-i18n="em_p">Police 110</span></a><a href="tel:119"><svg class="ic"><use href="#i-phone"/></svg><span data-i18n="em_f">Ambulance 119</span></a><a href="tel:0136215454"><svg class="ic"><use href="#i-phone"/></svg><span data-i18n="em_c">Clinic</span></a></div>
+    <div class="dots" aria-hidden="true"><i class="on"></i><i class="on"></i></div>
     <div class="q scroll">
-      <h3 data-i18n="ob3_h">How long is your stay?</h3>
-      <div class="choices" data-g="c"><button data-i18n="n1">1–2 nights</button><button data-i18n="n2">3–6 nights</button><button data-i18n="n3">7–10 nights</button><button data-i18n="n4">More than 10 nights</button></div>
-      <h3 style="margin-top:28px;font-size:20px" data-i18n="ob4_h">Where are you staying?</h3>
-      <div class="choices" data-g="d"><button>Upper Hirafu</button><button>Lower Hirafu</button><button>Hanazono</button><button>Yamada</button><button>Kutchan</button><button>Kabayama</button><button data-i18n="other" style="grid-column:1/-1">Elsewhere</button></div>
-      <h3 style="margin-top:28px;font-size:20px" data-i18n="ob5_h">Have you been to Niseko before?</h3>
-      <div class="choices" data-g="e" style="grid-template-columns:repeat(3,1fr)"><button data-i18n="r1">First time</button><button data-i18n="r2">2–3 times</button><button data-i18n="r3">4+ times</button></div>
+      <h3 id="q-nights" data-i18n="ob3_h">How long is your stay?</h3>
+      <div class="choices" data-g="c" role="group" aria-labelledby="q-nights"><button data-i18n="n1">1–2 nights</button><button data-i18n="n2">3–6 nights</button><button data-i18n="n3">7–10 nights</button><button data-i18n="n4">More than 10 nights</button></div>
+      <h3 id="q-area" style="margin-top:28px;font-size:20px" data-i18n="ob4_h">Where are you staying?</h3>
+      <div class="choices" data-g="d" role="group" aria-labelledby="q-area"><button>Upper Hirafu</button><button>Lower Hirafu</button><button>Hanazono</button><button>Yamada</button><button>Kutchan</button><button>Kabayama</button><button data-i18n="other" style="grid-column:1/-1">Elsewhere</button></div>
+      <h3 id="q-visits" style="margin-top:28px;font-size:20px" data-i18n="ob5_h">Have you been to Niseko before?</h3>
+      <div class="choices" data-g="e" role="group" aria-labelledby="q-visits" style="grid-template-columns:repeat(3,1fr)"><button data-i18n="r1">First time</button><button data-i18n="r2">2–3 times</button><button data-i18n="r3">4+ times</button></div>
+      <h3 id="q-age" style="margin-top:28px;font-size:20px" data-i18n="ob6_h">Age group</h3>
+      <div class="choices" data-g="f" role="group" aria-labelledby="q-age"><button data-i18n="age_10s">Under 20</button><button data-i18n="age_20s">20s</button><button data-i18n="age_30s">30s</button><button data-i18n="age_40s">40s</button><button data-i18n="age_50s">50s</button><button data-i18n="age_60s">60s</button><button data-i18n="age_70plus">70+</button><button data-i18n="age_no_answer" style="grid-column:1/-1">Prefer not to say</button></div>
     </div>
-    <div class="nav"><button class="btn navy" onclick="go('loc')" data-i18n="done">Done</button></div>
+    <div class="nav reqnav"><p class="req" id="req2" role="status"></p><button class="btn navy" id="next2" disabled aria-describedby="req2" onclick="finishSurvey()" data-i18n="done">Done</button></div>
   </section>
 
   <!-- LOCATION CONSENT（KTA 10/6: ブラウザ標準の同意ダイアログで本人が許可した場合のみ取得。先に目的を説明してから聞く） -->
@@ -414,11 +427,14 @@ const ROUTES={
  east:{en:"HIRAFU EAST LINE",ja:"ひらふイーストライン",c:"var(--l-east)",bus:null,mine:3,stops:[["Tokyu Niseko Sanso","東急ニセコ山荘"],["Niseko Adventure Center","NAC"],["Izumikyo","泉居"],["Stay","ステイ"],["Niseko International Clinic","ニセコインターナショナルクリニック"],["Seven Eleven","セブンイレブン"],["LAWSON","ローソン"],["Hirafu Gondola Station","ヒラフゴンドラ乗り場"]],h:["About every 30–50 min · 8:00–20:00 (peak period until 22:00)","約30〜50分間隔・8:00〜20:00（増便期 22:00）"]},
  downtown:{en:"DOWNTOWN LINE",ja:"くっちゃんナイト号",c:"var(--l-downtown)",bus:0,mine:9,start:"S",stops:[["Hirafu Welcome Center","ひらふウェルカムセンター"],["Hirafu Intersection","ひらふ十字街"],["Niseko Adventure Center","NAC"],["Izumikyo","泉居"],["Niseko International Clinic","ニセコインターナショナルクリニック"],["Boken Kazoku","冒険家族"],["Yamato Transport","ヤマト運輸"],["Max Valu","マックスバリュ"],["Lucky","ラッキー"],["Information Center Plat","まちの駅ぷらっと"],["JR Kutchan Station","倶知安駅"]],h:["Outward route (to JR Kutchan Station).","往路（倶知安駅方面）"]}
 };
-const T={ja:{w_eye:"ひらふ無料循環バス",w_h1:"ようこそ<br>ニセコへ",w_lead:"このタグが、あなたのシャトルガイドになりました。バスの現在地、降りる停留所、ニセコのおすすめまで。インストールは不要です。",key_t:"Niseko Key",verified:"本物のタグを確認",key_by:"SECURED BY NIJI BRAND TRUST PLATFORM",w_cta:"はじめる",w_skip:"そのままバスを見る",w_priv:"プライバシーを最初から守る設計です。タグに個人情報はなく、氏名・メール・電話番号もお聞きしません。",sos:"緊急のときは",ob_eye:"任意の設定",later:"あとで",ob1_h:"どちらからお越しですか？",ob1_s:"町の交通をより良くするために使います。匿名です。",other:"その他",ob2_h:"年代",next:"次へ",ob3_h:"滞在は何泊ですか？",n1:"1〜2泊",n2:"3〜4泊",n3:"5〜7泊",n4:"8泊以上",ob4_h:"滞在エリア",done:"完了",h_title:"シャトル",nearest:"最寄りの停留所",live:"ライブ",walk:"徒歩3分",min:"分",all_lines:"すべての路線",free:"期間中毎日・無料",next_at:"リズムまで",until16:"16:00まで",interval3050:"30〜50分間隔",nobus:"運行なし",from_wc:"ウェルカムセンター発",foot:"Secured by Niji Brand Trust Platform・プライバシーを守る設計",tab_ride:"乗る",tab_explore:"探す",tab_help:"困ったとき",back:"戻る",eta_t:"降りる停留所までのバス",near_b:"降りる停留所の周辺",near_p:"アスペンウッド周辺の飲食店・温泉・アクティビティを、ニセコデジタルマップで。",ex_eye:"倶知安観光協会のおすすめ",ex_t:"ニセコを探す",c_all:"すべて",c_food:"飲食",c_onsen:"温泉",c_act:"アクティビティ",c_lift:"リフト運行",c_taxi:"タクシー・レンタカー",map_note:"地図：ニセコデジタルマップ",map_open:"全画面で開く",help_eye:"24時間",help_t:"困ったとき・緊急",p110:"警察・110",p110s:"事故・事件・迷子",p119:"消防・救急・119",p119s:"急病・けが",op1:"ひらふ無料循環バス",op2:"くっちゃんナイト号",tr_b:"プライバシーを守る設計",tr_p:"Niseko Keyが持つのは識別用の番号（ID）だけで、氏名・連絡先は持ちません。このアプリがスマホの位置情報を送信することはありません。タグはNiji Brand Trust Platformで本物であることを確認しています。",help_note:"電話番号はひらふ無料循環バス公式サイトの記載です。",toast_b:"次があなたの停留所です",toast_s:"アスペンウッド・お降りの準備を"},en:{}};
+const T={ja:{w_eye:"ひらふ無料循環バス",w_h1:"ようこそ<br>ニセコへ",w_lead:"このタグが、あなたのシャトルガイドになりました。バスの現在地、降りる停留所、ニセコのおすすめまで。インストールは不要です。",key_t:"Niseko Key",verified:"本物のタグを確認",key_by:"SECURED BY NIJI BRAND TRUST PLATFORM",w_cta:"はじめる",w_priv:"プライバシーを最初から守る設計です。タグに個人情報はなく、氏名・メール・電話番号もお聞きしません。",sos:"緊急のときは",ob1_h:"どちらからお越しですか？",ob1_s:"1分かかりません。町の交通をより良くするために使います。回答はタグの識別番号と結び付けて保存し、町全体の集計にだけ使います。あなた個人を特定するためには使いません。",other:"その他",ob2_h:"年代",next:"次へ",ob3_h:"滞在は何泊ですか？",n1:"1〜2泊",n2:"3〜4泊",n3:"5〜7泊",n4:"8泊以上",ob4_h:"滞在エリア",done:"完了",h_title:"シャトル",nearest:"最寄りの停留所",live:"ライブ",walk:"徒歩3分",min:"分",all_lines:"すべての路線",free:"期間中毎日・無料",next_at:"リズムまで",until16:"16:00まで",interval3050:"30〜50分間隔",nobus:"運行なし",from_wc:"ウェルカムセンター発",foot:"Secured by Niji Brand Trust Platform・プライバシーを守る設計",tab_ride:"乗る",tab_explore:"探す",tab_help:"困ったとき",back:"戻る",eta_t:"降りる停留所までのバス",near_b:"降りる停留所の周辺",near_p:"アスペンウッド周辺の飲食店・温泉・アクティビティを、ニセコデジタルマップで。",ex_eye:"倶知安観光協会のおすすめ",ex_t:"ニセコを探す",c_all:"すべて",c_food:"飲食",c_onsen:"温泉",c_act:"アクティビティ",c_lift:"リフト運行",c_taxi:"タクシー・レンタカー",map_note:"地図：ニセコデジタルマップ",map_open:"全画面で開く",help_eye:"24時間",help_t:"困ったとき・緊急",p110:"警察・110",p110s:"事故・事件・迷子",p119:"消防・救急・119",p119s:"急病・けが",op1:"ひらふ無料循環バス",op2:"くっちゃんナイト号",tr_b:"プライバシーを守る設計",tr_p:"Niseko Keyが持つのは識別用の番号（ID）だけで、氏名・連絡先は持ちません。このアプリがスマホの位置情報を送信することはありません。タグはNiji Brand Trust Platformで本物であることを確認しています。",help_note:"電話番号はひらふ無料循環バス公式サイトの記載です。",toast_b:"次があなたの停留所です",toast_s:"アスペンウッド・お降りの準備を"},en:{}};
 Object.assign(T.ja,{em_p:"警察 110",em_f:"救急・消防 119",em_c:"クリニック",c_jp:"日本",ob1_h:"どちらからお越しですか？",n2:"3〜6泊",n3:"7〜10泊",n4:"10泊より長く",ob5_h:"ニセコは何回目ですか？",r1:"はじめて",r2:"2〜3回目",r3:"4回以上",notnow:"あとで",loc_h:"降りる停留所の前にお知らせ",loc_s:"位置情報を許可すると、次が降りる停留所になったときにお知らせします。",loc_1:"位置情報はこのスマホの中だけで使い、送信も保存もしません。",loc_2:"お知らせを受け取るには、乗車中はこの画面を開いたままにしてください。",loc_3:"ブラウザの設定でいつでもオフにできます。",loc_ok:"位置情報を許可する",dn_eye:"登録完了",dn_t:"ようこそニセコへ",vd_p:"ニセコを地元流に楽しみ、また歓迎されるための1分ガイド。",dm_b:"ニセコデジタルマップ",dm_s:"近くの飲食・温泉・アクティビティ",hp_b:"緊急・困ったとき",hp_s:"警察110・消防救急119・クリニック",dn_go:"シャトルを見る",cl_b:"ニセコインターナショナルクリニック",cl_s:"英語対応の医療機関"});
+/* 2026-10-12: アンケートの文言（試験公開版 strings.json の ob1_join・c_*・ob6_h・age_*・q_all と同じ） */
+Object.assign(T.ja,{ob1_join:"集計では、回答と、シャトル車内や停留所のリーダーがタグを読み取った記録（いつ・どこで）を合わせることがあります。",c_au:"オーストラリア",c_us:"アメリカ",c_hk:"香港",c_tw:"台湾",c_sg:"シンガポール",ob6_h:"年代",age_10s:"10代以下",age_20s:"20代",age_30s:"30代",age_40s:"40代",age_50s:"50代",age_60s:"60代",age_70plus:"70代以上",age_no_answer:"回答しない",q_all:"すべての質問に答えてください"});
 document.querySelectorAll('[data-i18n]').forEach(e=>{if(!(e.dataset.i18n in T.en))T.en[e.dataset.i18n]=e.innerHTML});
-let lang='en',cur='lower',alertOn=true;
-function setLang(l){lang=l;document.documentElement.lang=l;document.querySelectorAll('[data-i18n]').forEach(e=>{const v=T[l][e.dataset.i18n];if(v!==undefined)e.innerHTML=v});document.querySelectorAll('.langsel').forEach(s=>s.value=l);const u='https://kta.evoke.jp/?lang='+(l==='ja'?'ja':'en');['mapExt','mapExt2'].forEach(id=>document.getElementById(id).href=u);const f=document.getElementById('mapFrame');if(f&&f.src!==u)f.src=u;greet();renderLine()}
+T.en.q_all='Please answer all questions';
+let lang='en',cur='lower',alertOn=true,surveyDone=false;
+function setLang(l){lang=l;document.documentElement.lang=l;document.querySelectorAll('[data-i18n]').forEach(e=>{const v=T[l][e.dataset.i18n];if(v!==undefined)e.innerHTML=v});document.querySelectorAll('.langsel').forEach(s=>s.value=l);const u='https://kta.evoke.jp/?lang='+(l==='ja'?'ja':'en');['mapExt','mapExt2'].forEach(id=>document.getElementById(id).href=u);const f=document.getElementById('mapFrame');if(f&&f.src!==u)f.src=u;greet();renderLine();updateSurvey()}
 function toggleLang(){setLang(lang==='en'?'ja':'en')}
 document.querySelectorAll('.langsel').forEach(s=>s.onchange=()=>setLang(s.value));
 function greet(){const h=new Date().getHours();const g=lang==='ja'?(h<11?'おはようございます':h<17?'こんにちは':'こんばんは'):(h<11?'Good morning':h<17?'Good afternoon':'Good evening');document.getElementById('greet').textContent=g}
@@ -437,7 +453,20 @@ document.addEventListener('click',e=>{const a=e.target.closest('a[href^="tel:"]'
 document.getElementById('cs_go').addEventListener('click',()=>setTimeout(closeCall,300));
 function askLoc(){try{if(navigator.geolocation)navigator.geolocation.getCurrentPosition(()=>{},()=>{},{timeout:8000})}catch(e){}go('done')}
 function vidNote(){alert(lang==='ja'?'マナー動画「Enjoy & Respect Niseko」は倶知安観光協会から提供予定です（デモでは再生しません）。':'The "Enjoy & Respect Niseko" video will be provided by Kutchan Tourism Association (not playable in this demo).')}
-function go(s){document.querySelectorAll('.screen').forEach(x=>x.classList.toggle('on',x.dataset.s===s));}
+/* 2026-10-12: 答えずにバスの画面（ホーム・路線・降車の予定・探す・困ったとき）へ進む経路を作らない。
+   5問に答えて［完了］を押すまで、起動画面とアンケート以外へは移らない（ボタン・URL の ?screen=・関数の直接呼び出しのどれでも）。
+   2ページ目は国籍が未回答なら1ページ目へ戻す（試験公開版と同じ）。表示していない画面は inert にして、キーボードや読み上げでも入れない
+   （押したボタンに残ったフォーカスも外す） */
+const PRE=['welcome','ob1','ob2'];
+function go(s){if(!PRE.includes(s)&&!surveyDone)return;if(s==='ob2'&&!answered('a'))s='ob1';
+ document.querySelectorAll('.screen').forEach(x=>{const on=x.dataset.s===s;x.classList.toggle('on',on);x.toggleAttribute('inert',!on)});
+ const a=document.activeElement;if(a&&a.closest&&a.closest('.screen[inert]'))a.blur();}
+/* アンケート（試験公開版 WelcomeFlow.tsx の SurveyPage1・2 と同じ決まり）: 5問すべて必須（年代だけ「回答しない」を選べる）。
+   選んだ選択肢をもう一度押すと外れる。未回答の間はボタンを押せず、ボタンの上に「すべての質問に答えてください」。
+   回答はこの画面の中だけで持ち、保存も送信もしない（デモ） */
+function answered(g){return !!document.querySelector('.choices[data-g="'+g+'"] button.on')}
+function updateSurvey(){[['req1','next1',['a']],['req2','next2',['a','c','d','e','f']]].forEach(([r,b,gs])=>{const ok=gs.every(answered);document.getElementById(b).disabled=!ok;document.getElementById(r).textContent=ok?'':T[lang].q_all})}
+function finishSurvey(){if(!['a','c','d','e','f'].every(answered))return;surveyDone=true;go('loc')}
 document.querySelectorAll('.tabbar button').forEach(b=>b.onclick=()=>go(b.dataset.go));
 function renderLine(){const r=ROUTES[cur],ja=lang==='ja';document.getElementById('lName').textContent=r.en;document.getElementById('lJp').textContent=r.ja;document.getElementById('lRule').style.background=r.c;document.getElementById('lineScroll').style.setProperty('--lc',r.c);
  const ul=document.getElementById('stops');ul.innerHTML='';
@@ -457,7 +486,11 @@ function renderLine(){const r=ROUTES[cur],ja=lang==='ja';document.getElementById
 function openLine(id){cur=id;renderLine();go('line');document.getElementById('lineScroll').scrollTop=0}
 function toggleAlert(){alertOn=!alertOn;const s=document.getElementById('alertSw');s.classList.toggle('on',alertOn);s.setAttribute('aria-checked',alertOn)}
 function demoToast(){openLine('lower');const t=document.getElementById('toast');setTimeout(()=>t.classList.add('show'),400);setTimeout(()=>t.classList.remove('show'),3800)}
-document.querySelectorAll('.choices').forEach(g=>g.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;g.querySelectorAll('button').forEach(x=>x.classList.remove('on'));b.classList.add('on')}));
+document.querySelectorAll('.choices').forEach(g=>{g.querySelectorAll('button').forEach(b=>{b.type='button';b.setAttribute('aria-pressed','false')});
+ g.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const on=!b.classList.contains('on');
+  g.querySelectorAll('button').forEach(x=>{x.classList.remove('on');x.setAttribute('aria-pressed','false')});
+  if(on){b.classList.add('on');b.setAttribute('aria-pressed','true')}updateSurvey()})});
+go('welcome');updateSurvey();
 document.querySelectorAll('.cats button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.cats button').forEach(x=>x.classList.remove('on'));b.classList.add('on')});
 /* gentle snowfall (respects reduced motion) */
 (()=>{const c=document.getElementById('snow');const x=c.getContext('2d');const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;let W,H,f=[];function sz(){W=c.width=c.offsetWidth*devicePixelRatio;H=c.height=c.offsetHeight*devicePixelRatio}sz();addEventListener('resize',sz);
@@ -485,14 +518,15 @@ setInterval(()=>{Object.keys(ROUTES).forEach(id=>{const r=ROUTES[id];if(r.bus===
   const onLine=document.querySelector('.screen.on')?.dataset.s==='line'&&id===cur;
   if(onLine&&alertOn&&r.bus===r.mine-1)showToast();});
  if(document.querySelector('.screen.on')?.dataset.s==='line')renderLine();},6000);
-/* URLで画面を指定できる（実装確認・画像書き出し用）: ?screen=home&lang=ja&line=kabayama&toast=1&shot=1
-   shot=1 は端末枠と右の説明パネルを消し、画面だけを表示する */
+/* URLで画面を指定できる（実装確認・画像書き出し用）: ?screen=ob1&lang=ja&shot=1
+   shot=1 は端末枠と右の説明パネルを消し、画面だけを表示する。
+   2026-10-12: アンケート前なので、?screen= で開けるのは起動画面とアンケートだけ（home・line 等は go() の関所で止まる）。toast=1 も出さない */
 (()=>{const q=new URLSearchParams(location.search);
  if(q.get('shot')){document.body.classList.add('shot');const map=document.querySelector('.mapframe');map.innerHTML='<div class="mapph"><svg class="ic"><use href="#i-map"/></svg><b>Niseko Digital Map</b><span>kta.evoke.jp をここに埋め込み<br>（表示許可の依頼が必要）</span></div>'}
  if(q.get('lang'))setLang(q.get('lang'));
  if(q.get('line'))cur=q.get('line'),renderLine();
  const s=q.get('screen');if(s){s==='line'?openLine(cur):go(s)}
- if(q.get('toast'))document.getElementById('toast').classList.add('show');})();
+ if(q.get('toast')&&surveyDone)document.getElementById('toast').classList.add('show');})();
 </script>
 </body>
 </html>
