@@ -217,7 +217,7 @@ html[lang=ja] .w-body h1{font-size:40px;line-height:1.25;font-weight:500;letter-
 .btn:disabled{opacity:.6;cursor:default}.btn:disabled:active{transform:none}
 /* 2026-10-12 改訂2（10/12 輪島氏の指摘。試験公開版 U14 と同じ設計・同じ寸法と色＝niseko_bus globals.css の .q-seg 等）:
    上部＝5つに区切った進み具合（答えた質問が埋まる。今のページの区切りは枠線を強く＝未回答は白地に紺の枠・回答済みは紺、
-   別のページの区切りは未回答が灰・回答済みが淡い紺。2問目と3問目の間に隙間）＋「5問中 n問 回答」。
+   別のページの区切りは未回答が灰・回答済みが紺＝改訂3 R-1。2問目と3問目の間に隙間）＋「5問中 n問 回答済み」（10/12 承認）。
    各質問の見出しの上に「n / 5」。ボタンは押せない状態にしない（未回答で押すと最初の未回答へ移り、見出しの下に赤字）。
    ボタンと「すべての質問に答えてください」は画面の下に固定（スクロールしても見える。ホームバーの分を下に空ける） */
 .prog{padding:20px 22px 12px;border-bottom:1px solid transparent;transition:border-color .2s}
@@ -533,7 +533,7 @@ function go(s){if(!PRE.includes(s)&&!surveyDone)return;if(s==='ob2'&&!PAGES[1].e
    （押した後に選択を外すと戻る）。動きを減らす設定ならスクロールは即時。
    回答はこの画面の中だけで持ち、保存も送信もしない（デモ） */
 function answered(g){return !!document.querySelector('.choices[data-g="'+g+'"] button.on')}
-function progText(n){return lang==='ja'?'5問中 '+n+'問 回答':n+' of 5 answered'}
+function progText(n){return lang==='ja'?'5問中 '+n+'問 回答済み':n+' of 5 answered'} /* 日本語は 10/12 承認で「回答」→「回答済み」 */
 function updateSurvey(){const n=ALLQ.filter(answered).length,t=progText(n);
  document.querySelectorAll('.prog').forEach(pb=>{pb.setAttribute('aria-valuenow',n);pb.setAttribute('aria-valuetext',t);pb.querySelector('.prog-t').textContent=t;
   pb.querySelectorAll('.segs i').forEach(i=>i.classList.toggle('on',answered(i.dataset.q)))});
