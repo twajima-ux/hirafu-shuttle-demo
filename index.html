@@ -240,10 +240,12 @@ html[lang=ja] .w-body h1{font-size:40px;line-height:1.25;font-weight:500;letter-
 .survey .choices:focus-visible{outline:3px solid #4D8FDB;outline-offset:4px;border-radius:16px}
 .survey .nav.reqnav{flex-direction:column;gap:0;position:relative;z-index:1;background:var(--paper);border-top:1px solid var(--line);box-shadow:0 -8px 20px rgba(0,30,67,.06);padding:12px 22px calc(16px + env(safe-area-inset-bottom))}
 /* 2026-10-12 改訂3 */
-.obnote{margin-top:16px}.obnote .sub.s2{margin-top:0} /* M-1 案A: 1ページ目の説明文は年代の下（試験公開版 U14F と同じ間隔） */
+.obnote{margin-top:16px}.obnote .sub.s2{margin-top:0} /* 説明文2つの入れ物（改訂3 では1ページ目の年代の下） */
+.obnote2{margin-top:3px}.obnote2 + .qb{margin-top:24px} /* 改訂4（N-1 案1）: 2ページ目の最上部。進み具合から 16px（質問と同じ）、説明文の後に 24px 空けて「3 / 5」 */
 /* R-3: ページを移ったときのフォーカス先（見出し。tabIndex=-1）。押せる部品ではないので指の操作では枠を出さず、キーボード操作のときだけ控えめな枠（U14F と同じ） */
 .survey h3[tabindex="-1"]:focus{outline:none}
 .survey h3[tabindex="-1"]:focus-visible{outline:2px solid #4D8FDB;outline-offset:4px;border-radius:6px}
+.obnote2[tabindex="-1"]:focus{outline:none}.obnote2[tabindex="-1"]:focus-visible{outline:2px solid #4D8FDB;outline-offset:4px;border-radius:6px} /* 改訂4 追記: 2ページ目のフォーカス先（説明文の入れ物）も同じ扱い */
 /* R-5: 低い画面（高さ 500px 以下＝横向き等）では下のボタンを固定しない。上の緊急連絡・進み具合も含めて画面全体が流れる（試験公開版と同じ見え方）。
    スマホ表示（幅 860px 以下）だけ。PC の電話の枠の中は常に 390×844 なので対象外 */
 @media (max-width:860px) and (max-height:500px){
@@ -351,11 +353,6 @@ body.shot .screen{transition:none}
       <p class="qerr" id="qe-f" hidden><svg class="ic" aria-hidden="true"><use href="#i-help"/></svg><span data-i18n="q_this">Please answer this question</span></p>
       <div class="choices" data-g="f" role="group" aria-labelledby="q-age"><button data-i18n="age_10s">Under 20</button><button data-i18n="age_20s">20s</button><button data-i18n="age_30s">30s</button><button data-i18n="age_40s">40s</button><button data-i18n="age_50s">50s</button><button data-i18n="age_60s">60s</button><button data-i18n="age_70plus">70+</button><button data-i18n="age_no_answer" style="grid-column:1/-1">Prefer not to say</button></div>
       </div>
-      <!-- 2026-10-12 改訂3（M-1 案A）: 説明文2つは文言を変えずに年代の下（固定ボタンの上）へ移した。Safari を開いた直後の見える範囲でも「2 / 5 年代」が見えるように -->
-      <div class="obnote">
-      <p class="sub s2" data-i18n="ob1_s">Takes under a minute. Helps the town plan better transport. Your answers are saved with your tag's ID numbers and used only for town-wide totals — never to identify you.</p>
-      <p class="sub join" data-i18n="ob1_join">Totals may combine your answers with records of when and where your tag was detected by readers on shuttles and at stops.</p>
-      </div>
     </div>
     <div class="nav reqnav"><p class="req" id="req1" role="status"></p><button class="btn navy" id="next1" aria-describedby="req1" onclick="submitPage(1)" data-i18n="next">Continue</button></div>
   </section>
@@ -363,6 +360,12 @@ body.shot .screen{transition:none}
     <div class="ebar"><a href="tel:110"><svg class="ic"><use href="#i-phone"/></svg><span data-i18n="em_p">Police 110</span></a><a href="tel:119"><svg class="ic"><use href="#i-phone"/></svg><span data-i18n="em_f">Ambulance 119</span></a><a href="tel:0136215454"><svg class="ic"><use href="#i-phone"/></svg><span data-i18n="em_c">Clinic</span></a></div>
     <div class="prog" role="progressbar" aria-valuemin="0" aria-valuemax="5" aria-valuenow="0" aria-valuetext="0 of 5 answered" aria-labelledby="prog2"><div class="segs" aria-hidden="true"><i data-q="a"></i><i data-q="f"></i><i data-q="c" class="cur"></i><i data-q="d" class="cur"></i><i data-q="e" class="cur"></i></div><span class="prog-t" id="prog2">0 of 5 answered</span></div>
     <div class="q scroll">
+      <!-- 2026-10-12 改訂4（N-1 案1）: 回答の保存・集計の説明文2つ（承認済みの文言。1文字も変えない）を、2ページ目の最上部（進み具合の下・泊数の前）へ移した。
+           2ページ目は必ず一番上から始まるので、［完了］で送る前に必ず一度は画面に出る。1ページ目からは無くした（年代は最初の画面に見えたまま） -->
+      <div class="obnote obnote2">
+      <p class="sub s2" data-i18n="ob1_s">Takes under a minute. Helps the town plan better transport. Your answers are saved with your tag's ID numbers and used only for town-wide totals — never to identify you.</p>
+      <p class="sub join" data-i18n="ob1_join">Totals may combine your answers with records of when and where your tag was detected by readers on shuttles and at stops.</p>
+      </div>
       <div class="qb" id="qb-c">
       <p class="qno" aria-hidden="true">3 / 5</p>
       <h3 id="q-nights" data-i18n="ob3_h">How long is your stay?</h3>
@@ -525,7 +528,9 @@ function go(s){if(!PRE.includes(s)&&!surveyDone)return;if(s==='ob2'&&!PAGES[1].e
  document.querySelectorAll('.screen').forEach(x=>{const on=x.dataset.s===s;x.classList.toggle('on',on);x.toggleAttribute('inert',!on)});
  const a=document.activeElement;if(a&&a.closest&&a.closest('.screen[inert]'))a.blur();
  /* 改訂3（R-3）: アンケートのページを移ったら、一番上から始め、そのページの最初の見出しへフォーカス（読み上げがどこから読むか分かるように） */
- if(prev!==s&&(s==='ob1'||s==='ob2')){const scr=document.querySelector('.screen[data-s="'+s+'"]'),h=scr.querySelector('h3');scr.scrollTop=0;scr.querySelector('.scroll').scrollTop=0;h.tabIndex=-1;h.focus({preventScroll:true})}}
+ /* 改訂4 追記（10/12 orchestrator 決定）: 2ページ目は説明文の入れ物（.obnote2）へ。読み上げは説明文から始まり、そのまま「3 / 5 泊数」へ続く
+    （進み具合は DOM でその前なので読み戻らない）。1ページ目は最初の見出しのまま */
+ if(prev!==s&&(s==='ob1'||s==='ob2')){const scr=document.querySelector('.screen[data-s="'+s+'"]'),t=s==='ob2'?scr.querySelector('.obnote2'):scr.querySelector('h3');scr.scrollTop=0;scr.querySelector('.scroll').scrollTop=0;t.tabIndex=-1;t.focus({preventScroll:true})}}
 /* アンケート（試験公開版 WelcomeFlow.tsx の SurveyPage1・2 と同じ決まり）: 5問すべて必須（年代だけ「回答しない」を選べる）。
    選んだ選択肢をもう一度押すと外れる。未回答の間はボタンの上に「すべての質問に答えてください」。
    2026-10-12 改訂2: ボタンは押せない状態にしない（disabled を使わない）。未回答で押すと、最初の未回答の質問へスクロールしてフォーカスを移し、
