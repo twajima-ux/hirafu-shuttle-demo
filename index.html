@@ -225,9 +225,8 @@ html[lang=ja] .w-body h1{font-size:40px;line-height:1.25;font-weight:500;letter-
 .prog .segs{display:flex;gap:4px}
 .prog .segs i{flex:1 1 0;height:8px;border-radius:999px;background:#DFE4EC;transition:background .25s,box-shadow .25s}
 .prog .segs i:nth-child(3){margin-left:8px}
-.prog .segs i.on{background:#8796AB}
 .prog .segs i.cur{background:#fff;box-shadow:inset 0 0 0 1.5px var(--navy)}
-.prog .segs i.cur.on{background:var(--navy)}
+.prog .segs i.on{background:var(--navy)} /* 改訂3（R-1）: 答えた区切りはページに関係なく同じ紺（淡い紺 #8796AB をやめた） */
 .prog-t{display:block;margin-top:8px;font-size:12px;line-height:1.5;font-weight:500;color:var(--ink-2);font-variant-numeric:tabular-nums}
 .survey .q{padding-bottom:32px}
 .qb{margin-top:3px;scroll-margin-top:12px;scroll-margin-bottom:12px}
@@ -240,6 +239,21 @@ html[lang=ja] .w-body h1{font-size:40px;line-height:1.25;font-weight:500;letter-
 .survey .choices:focus{outline:none}
 .survey .choices:focus-visible{outline:3px solid #4D8FDB;outline-offset:4px;border-radius:16px}
 .survey .nav.reqnav{flex-direction:column;gap:0;position:relative;z-index:1;background:var(--paper);border-top:1px solid var(--line);box-shadow:0 -8px 20px rgba(0,30,67,.06);padding:12px 22px calc(16px + env(safe-area-inset-bottom))}
+/* 2026-10-12 改訂3 */
+.obnote{margin-top:16px}.obnote .sub.s2{margin-top:0} /* M-1 案A: 1ページ目の説明文は年代の下（試験公開版 U14F と同じ間隔） */
+/* R-3: ページを移ったときのフォーカス先（見出し。tabIndex=-1）。押せる部品ではないので指の操作では枠を出さず、キーボード操作のときだけ控えめな枠（U14F と同じ） */
+.survey h3[tabindex="-1"]:focus{outline:none}
+.survey h3[tabindex="-1"]:focus-visible{outline:2px solid #4D8FDB;outline-offset:4px;border-radius:6px}
+/* R-5: 低い画面（高さ 500px 以下＝横向き等）では下のボタンを固定しない。上の緊急連絡・進み具合も含めて画面全体が流れる（試験公開版と同じ見え方）。
+   スマホ表示（幅 860px 以下）だけ。PC の電話の枠の中は常に 390×844 なので対象外 */
+@media (max-width:860px) and (max-height:500px){
+  .survey{overflow-y:auto;scrollbar-width:none}.survey::-webkit-scrollbar{display:none}
+  .survey>*{flex-shrink:0}
+  .survey .q{flex:none;overflow:visible}
+  .survey .nav.reqnav{box-shadow:none}
+}
+/* R-6（デモだけ）: PC で画面の高さが 900px 未満のときは、電話の枠を縦横比のまま縮めて画面に収める（倍率は fitPhone()） */
+.phone{transform-origin:top center}
 /* toast (drop-off alert preview) */
 .toast{position:absolute;left:12px;right:12px;top:14px;background:rgba(15,27,45,.92);backdrop-filter:blur(14px);color:#fff;border-radius:20px;padding:14px 16px;display:flex;gap:12px;align-items:center;transform:translateY(-130%);transition:transform .5s var(--ease);z-index:5;box-shadow:0 12px 30px rgba(0,0,0,.25)}
 .toast{opacity:0}.toast.show{transform:none;opacity:1}
@@ -329,8 +343,6 @@ body.shot .screen{transition:none}
       <p class="qno" aria-hidden="true">1 / 5</p>
       <h3 id="q-nat" data-i18n="ob1_h">Where is home for you?</h3>
       <p class="qerr" id="qe-a" hidden><svg class="ic" aria-hidden="true"><use href="#i-help"/></svg><span data-i18n="q_this">Please answer this question</span></p>
-      <p class="sub s2" data-i18n="ob1_s">Takes under a minute. Helps the town plan better transport. Your answers are saved with your tag's ID numbers and used only for town-wide totals — never to identify you.</p>
-      <p class="sub join" data-i18n="ob1_join">Totals may combine your answers with records of when and where your tag was detected by readers on shuttles and at stops.</p>
       <div class="choices" data-g="a" role="group" aria-labelledby="q-nat"><button data-i18n="c_au">Australia</button><button data-i18n="c_us">United States</button><button data-i18n="c_hk">Hong Kong</button><button data-i18n="c_tw">Taiwan</button><button data-i18n="c_sg">Singapore</button><button data-i18n="c_jp">Japan</button><button data-i18n="other" style="grid-column:1/-1">Elsewhere</button></div>
       </div>
       <div class="qb" id="qb-f">
@@ -338,6 +350,11 @@ body.shot .screen{transition:none}
       <h3 id="q-age" style="font-size:20px" data-i18n="ob6_h">Age group</h3>
       <p class="qerr" id="qe-f" hidden><svg class="ic" aria-hidden="true"><use href="#i-help"/></svg><span data-i18n="q_this">Please answer this question</span></p>
       <div class="choices" data-g="f" role="group" aria-labelledby="q-age"><button data-i18n="age_10s">Under 20</button><button data-i18n="age_20s">20s</button><button data-i18n="age_30s">30s</button><button data-i18n="age_40s">40s</button><button data-i18n="age_50s">50s</button><button data-i18n="age_60s">60s</button><button data-i18n="age_70plus">70+</button><button data-i18n="age_no_answer" style="grid-column:1/-1">Prefer not to say</button></div>
+      </div>
+      <!-- 2026-10-12 改訂3（M-1 案A）: 説明文2つは文言を変えずに年代の下（固定ボタンの上）へ移した。Safari を開いた直後の見える範囲でも「2 / 5 年代」が見えるように -->
+      <div class="obnote">
+      <p class="sub s2" data-i18n="ob1_s">Takes under a minute. Helps the town plan better transport. Your answers are saved with your tag's ID numbers and used only for town-wide totals — never to identify you.</p>
+      <p class="sub join" data-i18n="ob1_join">Totals may combine your answers with records of when and where your tag was detected by readers on shuttles and at stops.</p>
       </div>
     </div>
     <div class="nav reqnav"><p class="req" id="req1" role="status"></p><button class="btn navy" id="next1" aria-describedby="req1" onclick="submitPage(1)" data-i18n="next">Continue</button></div>
@@ -504,9 +521,11 @@ function vidNote(){alert(lang==='ja'?'マナー動画「Enjoy & Respect Niseko�
 const PRE=['welcome','ob1','ob2'];
 /* 質問の並び（2026-10-12 改訂2）: 1ページ目＝国籍(a)→年代(f)、2ページ目＝泊数(c)→滞在エリア(d)→来訪回数(e)。番号 1〜5 もこの順 */
 const PAGES={1:['a','f'],2:['c','d','e']},ALLQ=['a','f','c','d','e'],tried={1:false,2:false};
-function go(s){if(!PRE.includes(s)&&!surveyDone)return;if(s==='ob2'&&!PAGES[1].every(answered))s='ob1';
+function go(s){if(!PRE.includes(s)&&!surveyDone)return;if(s==='ob2'&&!PAGES[1].every(answered))s='ob1';const prev=document.querySelector('.screen.on')?.dataset.s;
  document.querySelectorAll('.screen').forEach(x=>{const on=x.dataset.s===s;x.classList.toggle('on',on);x.toggleAttribute('inert',!on)});
- const a=document.activeElement;if(a&&a.closest&&a.closest('.screen[inert]'))a.blur();}
+ const a=document.activeElement;if(a&&a.closest&&a.closest('.screen[inert]'))a.blur();
+ /* 改訂3（R-3）: アンケートのページを移ったら、一番上から始め、そのページの最初の見出しへフォーカス（読み上げがどこから読むか分かるように） */
+ if(prev!==s&&(s==='ob1'||s==='ob2')){const scr=document.querySelector('.screen[data-s="'+s+'"]'),h=scr.querySelector('h3');scr.scrollTop=0;scr.querySelector('.scroll').scrollTop=0;h.tabIndex=-1;h.focus({preventScroll:true})}}
 /* アンケート（試験公開版 WelcomeFlow.tsx の SurveyPage1・2 と同じ決まり）: 5問すべて必須（年代だけ「回答しない」を選べる）。
    選んだ選択肢をもう一度押すと外れる。未回答の間はボタンの上に「すべての質問に答えてください」。
    2026-10-12 改訂2: ボタンは押せない状態にしない（disabled を使わない）。未回答で押すと、最初の未回答の質問へスクロールしてフォーカスを移し、
@@ -524,11 +543,14 @@ function updateSurvey(){const n=ALLQ.filter(answered).length,t=progText(n);
 /* 未回答の質問へ案内（試験公開版 U14 の guideToUnanswered と同じ順番）: 赤字を出してから、選択肢のグループ（tabIndex=-1）へフォーカス。
    質問がスクロール領域（.q）の中に隠れずに見えていれば動かさず、そうでなければ質問の上端を .q の上端へ（scroll-margin-top の分だけ空ける）。
    外側の .phone や window は動かさない。aria-invalid は付けない（ARIA 1.2 で全要素への使用が非推奨・role="group" は対象外。U14 と同じ） */
-function showQuestion(g){const b=document.getElementById('qb-'+g),sc=b.closest('.scroll'),grp=b.querySelector('.choices');
+function showQuestion(g){const b=document.getElementById('qb-'+g),q=b.closest('.scroll'),grp=b.querySelector('.choices');
  grp.tabIndex=-1;grp.focus({preventScroll:true});
- const r=b.getBoundingClientRect(),v=sc.getBoundingClientRect(),m=parseFloat(getComputedStyle(b).scrollMarginTop)||0;
+ /* 改訂3: 低い画面（R-5）では .q ではなく画面全体（section）が流れる。PC で枠を縮めているとき（R-6）は見た目の距離を倍率で割って戻す */
+ const sc=getComputedStyle(q).overflowY==='visible'?q.closest('.screen'):q;
+ const r=b.getBoundingClientRect(),v=sc.getBoundingClientRect(),m=parseFloat(getComputedStyle(b).scrollMarginTop)||0,k=(v.height/sc.offsetHeight)||1;
  if(r.top>=v.top&&r.bottom<=v.bottom)return;
- sc.scrollTo({top:Math.max(0,sc.scrollTop+r.top-v.top-m),behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})}
+ /* 画面全体が流れる低い画面では即時にスクロールする（WebKit では flex の section へのなめらかなスクロールが動かず、下に残ったままになるため。2026-10-12 実測） */
+ sc.scrollTo({top:Math.max(0,sc.scrollTop+(r.top-v.top)/k-m),behavior:sc!==q||matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})}
 document.querySelectorAll('.survey .q').forEach(sc=>sc.addEventListener('scroll',()=>sc.parentElement.querySelector('.prog').classList.toggle('sep',sc.scrollTop>0),{passive:true}));
 function submitPage(p){if(p===2&&!PAGES[1].every(answered)){go('ob1');return}
  tried[p]=true;updateSurvey();const miss=PAGES[p].filter(g=>!answered(g));
@@ -570,6 +592,12 @@ document.querySelectorAll('.cats button').forEach(b=>b.onclick=()=>{document.que
  function step(){f.forEach(p=>{p.y+=p.s/H*devicePixelRatio*3;p.d+=.01;p.x+=Math.sin(p.d)*.0004;if(p.y>1){p.y=0;p.x=Math.random()}});draw();requestAnimationFrame(step)}
  reduce?draw():step()})();
 greet();renderLine();
+/* 2026-10-12 改訂3（R-6・デモだけ）: PC（幅 861px 以上）で画面の高さが 900px 未満なら、電話の枠（390×844）を縦横比のまま縮めて
+   上下の余白 28px ずつを残して画面に収める。縮めた分は下の余白を詰める（ページがスクロールしないように）。スマホ表示と ?shot=1 では縮めない */
+function fitPhone(){const ph=document.querySelector('.phone');
+ const k=(matchMedia('(max-width:860px)').matches||document.body.classList.contains('shot'))?1:Math.min(1,(innerHeight-56)/844);
+ ph.style.transform=k<1?'scale('+k+')':'';ph.style.marginBottom=k<1?(844*(k-1))+'px':''}
+addEventListener('resize',fitPhone);fitPhone();
 
 /* ===== デモ用: バスが進む・降車通知 ===== */
 (()=>{const q=new URLSearchParams(location.search);const k=(q.get('k')||'').replace(/\D/g,'').slice(-4);
@@ -594,7 +622,7 @@ setInterval(()=>{Object.keys(ROUTES).forEach(id=>{const r=ROUTES[id];if(r.bus===
  if(q.get('lang'))setLang(q.get('lang'));
  if(q.get('line'))cur=q.get('line'),renderLine();
  const s=q.get('screen');if(s){s==='line'?openLine(cur):go(s)}
- if(q.get('toast')&&surveyDone)document.getElementById('toast').classList.add('show');})();
+ if(q.get('toast')&&surveyDone)document.getElementById('toast').classList.add('show');fitPhone();})();
 </script>
 </body>
 </html>
