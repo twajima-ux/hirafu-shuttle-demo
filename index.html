@@ -27,7 +27,7 @@ html,body{height:100%}
 body{font-family:"Noto Sans JP","Hiragino Kaku Gothic ProN",sans-serif;font-weight:400;color:var(--ink);background:#E9EDF3;display:flex;gap:32px;justify-content:center;align-items:flex-start;padding:28px 16px;-webkit-font-smoothing:antialiased;letter-spacing:.01em}
 .bb{font-family:"Bebas Neue","Noto Sans JP",sans-serif;font-weight:400;letter-spacing:.06em}
 .phone{width:390px;max-width:100%;height:844px;background:var(--paper);border-radius:44px;overflow:hidden;position:relative;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,30,67,.22),0 0 0 10px #0d1726}
-@media (max-width:860px){body{padding:0;background:var(--paper)}.phone{border-radius:0;height:100dvh;box-shadow:none;width:100%}.notes{display:none}}
+/* スマホ（幅 860px 以下、または指で操作する端末）の作りは、この style の最後の「改訂5」の規則（ページ全体をスクロールする） */
 .screen{position:absolute;inset:0;display:flex;flex-direction:column;opacity:0;pointer-events:none;transform:translateY(8px);transition:opacity .45s var(--ease),transform .45s var(--ease)}
 .screen.on{opacity:1;pointer-events:auto;transform:none}
 .scroll{flex:1;overflow-y:auto;scrollbar-width:none}.scroll::-webkit-scrollbar{display:none}
@@ -246,14 +246,7 @@ html[lang=ja] .w-body h1{font-size:40px;line-height:1.25;font-weight:500;letter-
 .survey h3[tabindex="-1"]:focus{outline:none}
 .survey h3[tabindex="-1"]:focus-visible{outline:2px solid #4D8FDB;outline-offset:4px;border-radius:6px}
 .obnote2[tabindex="-1"]:focus{outline:none}.obnote2[tabindex="-1"]:focus-visible{outline:2px solid #4D8FDB;outline-offset:4px;border-radius:6px} /* 改訂4 追記: 2ページ目のフォーカス先（説明文の入れ物）も同じ扱い */
-/* R-5: 低い画面（高さ 500px 以下＝横向き等）では下のボタンを固定しない。上の緊急連絡・進み具合も含めて画面全体が流れる（試験公開版と同じ見え方）。
-   スマホ表示（幅 860px 以下）だけ。PC の電話の枠の中は常に 390×844 なので対象外 */
-@media (max-width:860px) and (max-height:500px){
-  .survey{overflow-y:auto;scrollbar-width:none}.survey::-webkit-scrollbar{display:none}
-  .survey>*{flex-shrink:0}
-  .survey .q{flex:none;overflow:visible}
-  .survey .nav.reqnav{box-shadow:none}
-}
+/* R-5 の低い画面の規則は、改訂5（ページ全体のスクロール）で style の最後へ移した */
 /* R-6（デモだけ）: PC で画面の高さが 900px 未満のときは、電話の枠を縦横比のまま縮めて画面に収める（倍率は fitPhone()） */
 .phone{transform-origin:top center}
 /* toast (drop-off alert preview) */
@@ -280,6 +273,39 @@ body.shot .screen{transition:none}
 .notes ul{padding-left:18px}
 .notes nav{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 4px}
 .notes nav button{border:1px solid #c9d2df;background:#fff;border-radius:8px;padding:6px 10px;font:500 12px "Noto Sans JP";cursor:pointer}
+/* ===== 2026-10-13 改訂5（U14DM）: スマホでは、ふつうの Web ページとしてページ全体（document）をスクロールする =====
+   iPhone の Safari（iOS 26 の浮いたツールバー）の実機で、100dvh の枠＋内側の overflow:auto のスクロールが働かず、
+   起動画面の最後やアンケートの下の選択肢が出せなかった（10/13 輪島氏）。試験公開版と同じく document を流す作りにする。
+   - スマホの判定: 幅 860px 以下、または指で操作する端末（hover:none かつ pointer:coarse）。PC の電話の枠（R-6 の縮小を含む）はそのまま
+   - 表示していない画面は display:none、表示中の画面だけを流れに置く（絶対配置で重ねない）。画面ごとの最小の高さは 100vh→100svh（dvh は使わない）
+   - アンケートの［次へ］［完了］とタブバーは sticky で下に固定し、ホームバー／ツールバーの分（safe-area）を下に空ける。上の緊急連絡・進み具合は一緒に流れる
+   - 電話の確認画面とお知らせは画面（viewport）に固定。探す画面の地図は高さを持たせる */
+@media (max-width:860px), (hover:none) and (pointer:coarse){
+  html,body{height:auto}
+  html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+  body{display:block;padding:0;background:var(--paper)}
+  .phone{width:100%;max-width:none;height:auto;border-radius:0;overflow:visible;box-shadow:none;display:block;transform:none!important;margin-bottom:0!important}
+  .notes{display:none}
+  .screen{position:relative;inset:auto;display:none;opacity:1;pointer-events:auto;transform:none;transition:none;min-height:100vh;min-height:100svh}
+  .screen.on{display:flex}
+  .scroll,.welcome{overflow:visible}
+  .scroll{flex:1 0 auto}
+  .w-cta{padding-bottom:calc(18px + env(safe-area-inset-bottom))}
+  .ob .nav{padding-bottom:calc(26px + env(safe-area-inset-bottom))}
+  .screen[data-s="done"] .scroll{padding-bottom:env(safe-area-inset-bottom)}
+  .survey .nav.reqnav{position:sticky;bottom:0;z-index:4;padding-bottom:calc(16px + env(safe-area-inset-bottom))}
+  .tabbar{position:sticky;bottom:0;z-index:4}
+  .mapframe{flex:none;height:calc(100vh - 280px);height:calc(100svh - 280px);min-height:300px}
+  .toast{position:fixed;top:calc(14px + env(safe-area-inset-top));z-index:30}
+  .callsheet{position:fixed;z-index:40}
+}
+/* 幅 360px 以下（iPhone SE 第1世代の 320px 等）: 緊急連絡の3つのボタンが横にはみ出さないよう、帯の左右の余白とボタンの間を詰める
+   （日本語で 3px はみ出していた。以前は枠の overflow:hidden で切れて見えていなかった） */
+@media (max-width:360px){.ebar{padding-left:8px;padding-right:8px;gap:4px}}
+/* R-5: 低い画面（高さ 500px 以下＝横向き等）では、アンケートの下のボタンを固定せず、ページの最後に置く */
+@media (max-width:860px) and (max-height:500px), (hover:none) and (pointer:coarse) and (max-height:500px){
+  .survey .nav.reqnav{position:static;box-shadow:none}
+}
 </style>
 </head>
 <body>
@@ -522,11 +548,14 @@ function vidNote(){alert(lang==='ja'?'マナー動画「Enjoy & Respect Niseko�
    2ページ目は1ページ目の質問（国籍・年代）が未回答なら1ページ目へ戻す（試験公開版と同じ）。表示していない画面は inert にして、キーボードや読み上げでも入れない
    （押したボタンに残ったフォーカスも外す） */
 const PRE=['welcome','ob1','ob2'];
+/* 改訂5: スマホ（幅 860px 以下、または指で操作する端末）はページ全体（document）をスクロールする作り。CSS の改訂5の規則と同じ条件 */
+const PHONE_Q='(max-width:860px), (hover:none) and (pointer:coarse)';function isPhone(){return matchMedia(PHONE_Q).matches}
 /* 質問の並び（2026-10-12 改訂2）: 1ページ目＝国籍(a)→年代(f)、2ページ目＝泊数(c)→滞在エリア(d)→来訪回数(e)。番号 1〜5 もこの順 */
 const PAGES={1:['a','f'],2:['c','d','e']},ALLQ=['a','f','c','d','e'],tried={1:false,2:false};
 function go(s){if(!PRE.includes(s)&&!surveyDone)return;if(s==='ob2'&&!PAGES[1].every(answered))s='ob1';const prev=document.querySelector('.screen.on')?.dataset.s;
  document.querySelectorAll('.screen').forEach(x=>{const on=x.dataset.s===s;x.classList.toggle('on',on);x.toggleAttribute('inert',!on)});
  const a=document.activeElement;if(a&&a.closest&&a.closest('.screen[inert]'))a.blur();
+ if(prev!==s&&isPhone())window.scrollTo(0,0); /* 改訂5: 画面を切り替えたらページの一番上から見せる */
  /* 改訂3（R-3）: アンケートのページを移ったら、一番上から始め、そのページの最初の見出しへフォーカス（読み上げがどこから読むか分かるように） */
  /* 改訂4 追記（10/12 orchestrator 決定）: 2ページ目は説明文の入れ物（.obnote2）へ。読み上げは説明文から始まり、そのまま「3 / 5 泊数」へ続く
     （進み具合は DOM でその前なので読み戻らない）。1ページ目は最初の見出しのまま */
@@ -550,12 +579,18 @@ function updateSurvey(){const n=ALLQ.filter(answered).length,t=progText(n);
    外側の .phone や window は動かさない。aria-invalid は付けない（ARIA 1.2 で全要素への使用が非推奨・role="group" は対象外。U14 と同じ） */
 function showQuestion(g){const b=document.getElementById('qb-'+g),q=b.closest('.scroll'),grp=b.querySelector('.choices');
  grp.tabIndex=-1;grp.focus({preventScroll:true});
- /* 改訂3: 低い画面（R-5）では .q ではなく画面全体（section）が流れる。PC で枠を縮めているとき（R-6）は見た目の距離を倍率で割って戻す */
- const sc=getComputedStyle(q).overflowY==='visible'?q.closest('.screen'):q;
- const r=b.getBoundingClientRect(),v=sc.getBoundingClientRect(),m=parseFloat(getComputedStyle(b).scrollMarginTop)||0,k=(v.height/sc.offsetHeight)||1;
+ const m=parseFloat(getComputedStyle(b).scrollMarginTop)||0,behavior=matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth';
+ if(isPhone()){
+  /* 改訂5（スマホ）: ページ全体のスクロール。試験公開版と同じ判断＝見出し・赤字・選択肢の1行目が、画面の上端から下の固定ボタンの帯までの間に
+     見えていれば動かさない。見えていなければ、質問の上端を画面の上端へ（scroll-margin-top の分だけ空ける） */
+  const nav=b.closest('.screen').querySelector('.nav'),nr=nav.getBoundingClientRect(),limit=getComputedStyle(nav).position==='sticky'?Math.min(nr.top,innerHeight):innerHeight;
+  const h=document.getElementById(grp.getAttribute('aria-labelledby')).getBoundingClientRect(),e=document.getElementById('qe-'+g),f=grp.querySelector('button').getBoundingClientRect();
+  if(h.top>=0&&Math.max(h.bottom,e.hidden?0:e.getBoundingClientRect().bottom,f.bottom)<=limit)return;
+  window.scrollTo({top:Math.max(0,scrollY+b.getBoundingClientRect().top-m),behavior});return}
+ /* PC の電話の枠: 質問の領域（.q）の中をスクロールする。枠を縮めているとき（R-6）は見た目の距離を倍率で割って戻す */
+ const r=b.getBoundingClientRect(),v=q.getBoundingClientRect(),k=(v.height/q.offsetHeight)||1;
  if(r.top>=v.top&&r.bottom<=v.bottom)return;
- /* 画面全体が流れる低い画面では即時にスクロールする（WebKit では flex の section へのなめらかなスクロールが動かず、下に残ったままになるため。2026-10-12 実測） */
- sc.scrollTo({top:Math.max(0,sc.scrollTop+(r.top-v.top)/k-m),behavior:sc!==q||matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})}
+ q.scrollTo({top:Math.max(0,q.scrollTop+(r.top-v.top)/k-m),behavior})}
 document.querySelectorAll('.survey .q').forEach(sc=>sc.addEventListener('scroll',()=>sc.parentElement.querySelector('.prog').classList.toggle('sep',sc.scrollTop>0),{passive:true}));
 function submitPage(p){if(p===2&&!PAGES[1].every(answered)){go('ob1');return}
  tried[p]=true;updateSurvey();const miss=PAGES[p].filter(g=>!answered(g));
@@ -600,7 +635,7 @@ greet();renderLine();
 /* 2026-10-12 改訂3（R-6・デモだけ）: PC（幅 861px 以上）で画面の高さが 900px 未満なら、電話の枠（390×844）を縦横比のまま縮めて
    上下の余白 28px ずつを残して画面に収める。縮めた分は下の余白を詰める（ページがスクロールしないように）。スマホ表示と ?shot=1 では縮めない */
 function fitPhone(){const ph=document.querySelector('.phone');
- const k=(matchMedia('(max-width:860px)').matches||document.body.classList.contains('shot'))?1:Math.min(1,(innerHeight-56)/844);
+ const k=(isPhone()||document.body.classList.contains('shot'))?1:Math.min(1,(innerHeight-56)/844); /* 改訂5: 縮めるのは PC（スマホ扱いでないとき）だけ */
  ph.style.transform=k<1?'scale('+k+')':'';ph.style.marginBottom=k<1?(844*(k-1))+'px':''}
 addEventListener('resize',fitPhone);fitPhone();
 
